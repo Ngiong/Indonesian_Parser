@@ -58,7 +58,7 @@ public class ParseTree {
 
   private void __binarize() {
     int numOfChildren = CHILDREN.size();
-    String intermediateTag = NODE_TAG + "*";
+    String intermediateTag = NODE_TAG + "_";
 
     // Last TWO Children
     ParseTree bottom = new ParseTree(BRACKETS, USING_BINARY_NODES);
