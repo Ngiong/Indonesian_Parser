@@ -14,7 +14,7 @@ public class ActionExtractor {
     List<Action> result = new ArrayList<>();
     if (tree.isLeaf()) {
       WordToken wordToken = new WordToken(tree.getWord(), POSTag.valueOf(tree.getNodeTag()));
-      result.add(actionFactory.getSHIFTAction(wordToken));
+      result.add(actionFactory.getSHIFTAction());
     } else {
       List<List<Action>> childActions = new ArrayList<>();
       for (ParseTree child : tree.getChildren()) childActions.add(getParsingActions(child));
