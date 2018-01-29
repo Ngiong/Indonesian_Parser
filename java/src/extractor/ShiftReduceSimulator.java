@@ -4,6 +4,8 @@ import datatype.Action;
 import datatype.ConstituentLabel;
 import datatype.StackToken;
 import datatype.WordToken;
+import feature.Feature;
+import feature.FeatureTemplate;
 
 import java.util.List;
 import java.util.Queue;
@@ -22,6 +24,10 @@ public class ShiftReduceSimulator {
 
   public void run() {
     for (Action action : actions) {
+      FeatureTemplate t = FeatureTemplate.Q0_W_T;
+      Feature f = t.extract(workingStack, wordQueue, action);
+      System.out.println(f);
+
       switch (action.getActionType()) {
         case SHIFT: processSHIFT(); break;
         case UNARY: processUNARY(action.getLabel()); break;

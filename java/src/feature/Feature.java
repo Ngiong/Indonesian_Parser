@@ -18,4 +18,6 @@ public class Feature {
   public Action getAction() {
     return action;
   }
+
+  public String toString() { return featureId + "->" + action; }
 }
