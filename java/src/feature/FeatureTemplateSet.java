@@ -24,10 +24,10 @@ public class FeatureTemplateSet {
     return this;
   }
 
-  public List<Feature> extract(Stack<StackToken> stack, Queue<WordToken> wordQueue, Action action) {
+  public List<Feature> extract(Stack<StackToken> stack, Queue<WordToken> wordQueue) {
     List<Feature> result = new ArrayList<>();
     for (FeatureTemplate t : templates) {
-      Feature f = t.extract(stack, wordQueue, action);
+      Feature f = t.extract(stack, wordQueue);
       result.add(f);
     }
     return result;

@@ -34,7 +34,7 @@ public enum FeatureTemplate {
 
   public FeatureType getType() { return type; }
 
-  public Feature extract(Stack<StackToken> workingStack, Queue<WordToken> wordQueue, Action action) {
+  public Feature extract(Stack<StackToken> workingStack, Queue<WordToken> wordQueue) {
     String featureId = null;
 
     switch (type) {
@@ -43,7 +43,7 @@ public enum FeatureTemplate {
       case TRIGRAM: featureId = extractTRIGRAM(workingStack, wordQueue); break;
     }
 
-    return new Feature(featureId, action);
+    return new Feature(featureId);
   }
 
   private String extractUNIGRAM(Stack<StackToken> workingStack, Queue<WordToken> wordQueue) {

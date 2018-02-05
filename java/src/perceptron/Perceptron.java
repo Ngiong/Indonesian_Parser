@@ -1,6 +1,7 @@
 package perceptron;
 
 import datatype.Action;
+import datatype.StackToken;
 import datatype.WordToken;
 import extractor.ActionExtractor;
 import extractor.ShiftReduceSimulator;
@@ -13,9 +14,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 
 public class Perceptron {
   private final String CLASS_TAG = "[PERCEPTRON]";
@@ -24,6 +23,9 @@ public class Perceptron {
   private Map<String, Integer> learningParameter;
   private BufferedReader reader;
   private File treebankFile;
+
+  private Stack<StackToken> workingMemory;
+  private Queue<WordToken> wordQueue;
 
   public Perceptron(String filepath) {
     parseTreeFactory = new ParseTreeFactory();
@@ -41,22 +43,35 @@ public class Perceptron {
     while ((line = reader.readLine()) != null) {
       ParseTree pt = parseTreeFactory.getParseTree(line, true);
       List<Action> actions = ActionExtractor.getParsingActions(pt);
-      Queue<WordToken> wordQueue = WordTokenExtractor.getWordQueue(pt);
+      workingMemory = new Stack<>(); wordQueue = WordTokenExtractor.getWordQueue(pt);
 
-      ShiftReduceSimulator sim = new ShiftReduceSimulator(wordQueue, actions);
+      ShiftReduceSimulator sim = new ShiftReduceSimulator(workingMemory, wordQueue, actions);
       while (sim.hasNextStep()) {
         List<Feature> extractedFeatures = sim.nextStep();
-
+        Action prediction = predict(extractedFeatures);
       }
-      /*
-      ParseTree pt = parseTreeFactory.getParseTree(VALID_1, true);
-    List<Action> actions = ActionExtractor.getParsingActions(pt);
-
-    Queue<WordToken> wordQueue = ParseTree.getWordQueue(pt);
-    ShiftReduceSimulator sim = new ShiftReduceSimulator(wordQueue, actions);
-    sim.run();
-       */
     }
+  }
+
+  public Action predict(List<Feature> extractedFeatures) {
+    List<Action> allActions = Action.getAllActions();
+
+    int maxScore = 0;
+    Action bestAction = allActions.get(0);
+
+    for (Action action : allActions) {
+      int myScore = 0;
+      for (Feature feature : extractedFeatures) myScore += __calculateActionScore(feature, action);
+      if (myScore > maxScore) { maxScore = myScore; bestAction = action; }
+    }
+
+    return bestAction;
+  }
+
+  private int __calculateActionScore(Feature feature, Action action) {
+    String featureAction = feature.toString() + "." + action.toString();
+    if (learningParameter.containsKey(featureAction)) return learningParameter.get(feature.toString());
+    else return 0;
   }
 
   @Override

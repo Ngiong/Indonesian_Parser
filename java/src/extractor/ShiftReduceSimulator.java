@@ -15,30 +15,15 @@ import java.util.Stack;
 public class ShiftReduceSimulator {
   private Stack<StackToken> workingStack;
   private Queue<WordToken> wordQueue;
-  private List<Action> actions;
   private Iterator<Action> actionIt;
   private FeatureTemplateSet featureTemplateSet;
 
-  public ShiftReduceSimulator(Queue<WordToken> wordQueue, List<Action> actions) {
-    this.workingStack = new Stack<>();
+  public ShiftReduceSimulator(Stack<StackToken> workingStack, Queue<WordToken> wordQueue, List<Action> actions) {
+    this.workingStack = workingStack;
     this.wordQueue = wordQueue;
-    this.actions = actions; this.actionIt = actions.iterator();
+    this.actionIt = actions.iterator();
     this.featureTemplateSet = new FeatureTemplateSet(); featureTemplateSet.useAll();
   }
-
-//  public void run() {
-//    for (Action action : actions) {
-//      List<Feature> extractedFeatures = featureTemplateSet.extract(workingStack, wordQueue, action);
-//      for (Feature f : extractedFeatures) System.out.println(f);
-//
-//      switch (action.getActionType()) {
-//        case SHIFT: processSHIFT(); break;
-//        case UNARY: processUNARY(action.getLabel()); break;
-//        case REDUCE: processREDUCE(action.getLabel()); break;
-//        case FINISH: processFINISH(); break;
-//      }
-//    }
-//  }
 
   public boolean hasNextStep() { return actionIt.hasNext(); }
 
