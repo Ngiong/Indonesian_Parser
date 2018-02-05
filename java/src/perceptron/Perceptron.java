@@ -7,6 +7,7 @@ import extractor.ActionExtractor;
 import extractor.ShiftReduceSimulator;
 import extractor.WordTokenExtractor;
 import feature.Feature;
+import javafx.util.Pair;
 import tree.ParseTree;
 import tree.ParseTreeFactory;
 
@@ -26,9 +27,16 @@ public class Perceptron {
 
   private Stack<StackToken> workingMemory;
   private Queue<WordToken> wordQueue;
+  private int learningRate;
+  private int epochs;
 
-  public Perceptron(String filepath) {
+  private Set<String> featureCounter;
+
+  public Perceptron(String filepath, int learningRate, int epochs) {
     parseTreeFactory = new ParseTreeFactory();
+    featureCounter = new HashSet<>();
+    this.learningRate = learningRate; this.epochs = epochs;
+
     try {
       treebankFile = new File(filepath);
       reader = new BufferedReader(new FileReader(treebankFile));
@@ -47,8 +55,12 @@ public class Perceptron {
 
       ShiftReduceSimulator sim = new ShiftReduceSimulator(workingMemory, wordQueue, actions);
       while (sim.hasNextStep()) {
-        List<Feature> extractedFeatures = sim.nextStep();
-        Action prediction = predict(extractedFeatures);
+        Pair<List<Feature>, Action> trainingExample = sim.nextStep();
+        List<Feature> extractedFeatures = trainingExample.getKey();
+        Action reference = trainingExample.getValue();
+
+        Action predicted = predict(extractedFeatures);
+        if (!predicted.equals(reference)) __updateLearningParameter(extractedFeatures, predicted, reference);
       }
     }
   }
@@ -72,6 +84,20 @@ public class Perceptron {
     String featureAction = feature.toString() + "." + action.toString();
     if (learningParameter.containsKey(featureAction)) return learningParameter.get(feature.toString());
     else return 0;
+  }
+
+  private void __updateLearningParameter(List<Feature> extractedFeatures, Action predicted, Action reference) {
+    for (Feature feature : extractedFeatures) {
+      String incrementFeatureAction = feature.featureActionString(reference);
+      String punishedFeatureAction = feature.featureActionString(predicted);
+
+      featureCounter.add(incrementFeatureAction);
+      featureCounter.add(punishedFeatureAction);
+      // Update and Punish
+//      if (learningParameter.containsKey(incrementFeatureAction)) {
+//
+//      }
+    }
   }
 
   @Override

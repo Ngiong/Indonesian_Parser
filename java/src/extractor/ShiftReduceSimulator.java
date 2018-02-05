@@ -6,6 +6,7 @@ import datatype.StackToken;
 import datatype.WordToken;
 import feature.Feature;
 import feature.FeatureTemplateSet;
+import javafx.util.Pair;
 
 import java.util.Iterator;
 import java.util.List;
@@ -27,9 +28,9 @@ public class ShiftReduceSimulator {
 
   public boolean hasNextStep() { return actionIt.hasNext(); }
 
-  public List<Feature> nextStep() {
+  public Pair<List<Feature>, Action> nextStep() {
     Action action = actionIt.next();
-    List<Feature> extractedFeatures = featureTemplateSet.extract(workingStack, wordQueue, action);
+    List<Feature> extractedFeatures = featureTemplateSet.extract(workingStack, wordQueue);
 
     switch (action.getActionType()) {
       case SHIFT: processSHIFT(); break;
@@ -38,7 +39,7 @@ public class ShiftReduceSimulator {
       case FINISH: processFINISH(); break;
     }
 
-    return extractedFeatures;
+    return new Pair(extractedFeatures, action);
   }
 
   private void processSHIFT() {

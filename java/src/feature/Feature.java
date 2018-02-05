@@ -14,4 +14,6 @@ public class Feature {
   }
 
   public String toString() { return featureId; }
+
+  public String featureActionString(Action action) { return featureId + "." + action.toString(); }
 }

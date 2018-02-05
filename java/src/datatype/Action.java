@@ -21,6 +21,8 @@ public class Action {
     return actionType + (label != null ? "-" + label : "");
   }
 
+  public boolean equals(Action a) { return actionType == a.actionType &&  label == a.label; }
+
   public ActionType getActionType() {
     return actionType;
   }
