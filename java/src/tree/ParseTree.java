@@ -1,7 +1,12 @@
 package tree;
 
+import datatype.POSTag;
+import datatype.WordToken;
+
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 public class ParseTree {
   private final String BRACKETS;

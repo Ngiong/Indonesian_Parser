@@ -16,15 +16,23 @@ public enum FeatureTemplate {
   Q2_W_T(FeatureType.UNIGRAM), Q3_W_T(FeatureType.UNIGRAM),
 
   S0L_W_C(FeatureType.UNIGRAM_PLUS), S0R_W_C(FeatureType.UNIGRAM_PLUS), S0_U_W_C(FeatureType.UNIGRAM_PLUS),
-  S1L_W_C(FeatureType.UNIGRAM_PLUS), S1R_W_C(FeatureType.UNIGRAM_PLUS), S1_U_W_C(FeatureType.UNIGRAM_PLUS);
+  S1L_W_C(FeatureType.UNIGRAM_PLUS), S1R_W_C(FeatureType.UNIGRAM_PLUS), S1_U_W_C(FeatureType.UNIGRAM_PLUS),
 
   // bigram
+  S0_W_S1_W(FeatureType.BIGRAM), S0_W_S1_C(FeatureType.BIGRAM), S0_C_S1_W(FeatureType.BIGRAM), S0_C_S1_C(FeatureType.BIGRAM),
+  S0_W_Q0_W(FeatureType.BIGRAM), S0_W_Q0_T(FeatureType.BIGRAM), S0_C_Q0_W(FeatureType.BIGRAM), S0_C_Q0_T(FeatureType.BIGRAM),
+  Q0_W_Q1_W(FeatureType.BIGRAM), Q0_W_Q1_T(FeatureType.BIGRAM), Q0_T_Q1_W(FeatureType.BIGRAM), Q0_T_Q1_T(FeatureType.BIGRAM),
+  S1_W_Q0_W(FeatureType.BIGRAM), S1_W_Q0_T(FeatureType.BIGRAM), S1_C_Q0_W(FeatureType.BIGRAM), S1_C_Q0_T(FeatureType.BIGRAM),
 
   // trigram
+  S0_C_S1_C_S2_C(FeatureType.TRIGRAM), S0_W_S1_C_S2_C(FeatureType.TRIGRAM), S0_C_S1_W_S2_C(FeatureType.TRIGRAM), S0_C_S1_C_S2_W(FeatureType.TRIGRAM),
+  S0_C_S1_C_Q0_T(FeatureType.TRIGRAM), S0_W_S1_C_Q0_T(FeatureType.TRIGRAM), S0_C_S1_W_Q0_T(FeatureType.TRIGRAM), S0_C_S1_C_Q0_W(FeatureType.TRIGRAM);
 
   private FeatureType type;
 
   FeatureTemplate(FeatureType ft) { type = ft; }
+
+  public FeatureType getType() { return type; }
 
   public Feature extract(Stack<StackToken> workingStack, Queue<WordToken> wordQueue, Action action) {
     String featureId = null;
@@ -53,7 +61,7 @@ public enum FeatureTemplate {
       }
 
       if (type == FeatureType.UNIGRAM_PLUS && token != null) {
-        if (token.getPrevs() != null) token = null;
+        if (token.getPrevs() == null) token = null;
         else {
           char move = template.charAt(2);
           switch (move) {
@@ -79,6 +87,19 @@ public enum FeatureTemplate {
       if (token == null) result = templateTokens[0] + ".NULL";
       else result = templateTokens[0] + "." + token.getWord() + "." + token.getTag();
     }
+
+    return result;
+  }
+
+  private String extractBIGRAM(Stack<StackToken> workingStack, Queue<WordToken> wordQueue) {
+    return null;
+  }
+
+  private String extractTRIGRAM(Stack<StackToken> workingStack, Queue<WordToken> wordQueue) {
+    return null;
+  }
+}
+
 
 //    if (template.charAt(0) == 'S') {
 //      StackToken token = null;
@@ -116,14 +137,3 @@ public enum FeatureTemplate {
 //      if (token == null) result = template.substring(0, 2) + ".NULL";
 //      else result = template.substring(0, 2) + "." + token.getWord() + "." + token.getTag();
 //    }
-    return result;
-  }
-
-  private String extractBIGRAM(Stack<StackToken> workingStack, Queue<WordToken> wordQueue) {
-    return null;
-  }
-
-  private String extractTRIGRAM(Stack<StackToken> workingStack, Queue<WordToken> wordQueue) {
-    return null;
-  }
-}
