@@ -18,7 +18,7 @@ public class ParseTreeChecker {
   private static final Set<String> POS_TAGS = new HashSet<>(Arrays.asList(PT));
   private static final Set<String> CONSTITUENT_LABELS = new HashSet<>(Arrays.asList(CL));
 
-  public static final boolean isValidTree(ParseTree pt) {
+  public static boolean isValidTree(ParseTree pt) {
     if (pt.isLeaf()) return POS_TAGS.contains(pt.getNodeTag());
     else {
       boolean valid = true;
@@ -33,7 +33,7 @@ public class ParseTreeChecker {
     }
   }
 
-  public static final boolean isBinaryTree(ParseTree pt) {
+  public static boolean isBinaryTree(ParseTree pt) {
     if (pt.isLeaf()) return true;
     else {
       boolean valid = pt.getChildren().size() <= 2;

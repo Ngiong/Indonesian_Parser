@@ -4,7 +4,7 @@ import java.util.Stack;
 
 @Deprecated
 public class ParseTreeVisualizer {
-  public static final void print(ParseTree pt) {
+  public static void print(ParseTree pt) {
     String brackets = pt.toString();
     Stack<Integer> indents = new Stack<>(); indents.push(0);
     for (int i = 0; i < brackets.length(); i++) {
