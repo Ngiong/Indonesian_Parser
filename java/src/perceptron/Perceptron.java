@@ -16,26 +16,35 @@ import java.io.*;
 import java.util.*;
 
 public class Perceptron {
-  private final String CLASS_TAG = "[PERCEPTRON]";
+  private static final String CLASS_TAG = "[PERCEPTRON]";
 
   private ParseTreeFactory parseTreeFactory;
   private LearningParameter learningParameter;
   private String treebankFilename;
   private int learningRate;
+  private boolean readOnly;
 
-  public Perceptron(String filepath, int _learningRate) {
+  public Perceptron() { // Read-only Perceptron
+    readOnly = true;
+  }
+
+  public Perceptron(String treebankPath, int _learningRate) {
     if (_learningRate < 0)
       throw new IllegalArgumentException("Learning Rate must be greater than 0!");
 
     parseTreeFactory = new ParseTreeFactory();
     learningParameter = new LearningParameter();
     learningRate = _learningRate;
-    treebankFilename = filepath;
+    treebankFilename = treebankPath;
+    readOnly = false;
   }
 
   private static final String TRAIN_TAG = "[TRAIN]";
-  public void train(int epochs) {
+  public void train(int epochs, String epochSaveFilename) {
     try {
+      if (readOnly)
+        throw new IllegalAccessException("Read-only Perceptron cannot be used for training.");
+
       List<Integer> trainingSummary = new ArrayList<>();
       Stack<StackToken> workingMemory;
       Queue<WordToken> wordQueue;
@@ -47,7 +56,7 @@ public class Perceptron {
         BufferedReader reader = new BufferedReader(new FileReader(treebankFilename));
         while ((line = reader.readLine()) != null) {
           ParseTree pt = parseTreeFactory.getParseTree(line, true);
-          List<Action> actions = ActionExtractor.getParsingActions(pt);
+          List<Action> actions = ActionExtractor.getParsingActions(pt, true);
           workingMemory = new Stack<>();
           wordQueue = WordTokenExtractor.getWordQueue(pt);
 
@@ -67,6 +76,9 @@ public class Perceptron {
         }
         trainingSummary.add(wrongPrediction);
         reader.close();
+
+        if (epochSaveFilename != null)
+          writeToFile(epochSaveFilename + i);
       }
       System.out.println("Summary: " + trainingSummary.toString());
     } catch (Exception e) {
@@ -91,6 +103,12 @@ public class Perceptron {
     }
 
     return bestAction;
+  }
+
+  public int score(List<Feature> features, Action action) {
+    int result = 0;
+    for (Feature feature : features) result += learningParameter.calculate(feature, action);
+    return result;
   }
 
   private static final String WRITE_TO_FILE_TAG = "[WRITE TO FILE]";
@@ -121,5 +139,13 @@ public class Perceptron {
       System.err.println(CLASS_TAG + READ_FROM_FILE_TAG + e.getMessage());
       e.printStackTrace();
     }
+  }
+
+  private static final String LOAD_AS_READ_ONLY_TAG = "[LOAD AS READ ONLY]";
+  public static Perceptron loadAsReadOnly(String filepath) {
+    Perceptron result = new Perceptron();
+    result.readFromFile(filepath);
+    System.out.println(CLASS_TAG + LOAD_AS_READ_ONLY_TAG + "Perceptron has been loaded successfully.");
+    return result;
   }
 }

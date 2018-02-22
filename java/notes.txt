@@ -1,2 +1,6 @@
 Unigram Features:
 1.667.679 (16.366 trees)
+
+5 epochs using unigram falserate
+[168730, 133185, 113693, 100505, 89947]
+788597 => ~ 0.11405%

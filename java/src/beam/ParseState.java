@@ -12,8 +12,6 @@ public class ParseState implements Comparable<ParseState> {
   private int score;
   private List<Action> actions;
 
-  ParseState(int s) { this.score = s; }
-
   ParseState(Queue<WordToken> words) {
     workingStack = new Stack<>();
     wordQueue = words;
@@ -40,11 +38,15 @@ public class ParseState implements Comparable<ParseState> {
   public boolean canDo(Action action) {
     switch (action.getActionType()) {
       case SHIFT: return wordQueue.size() > 0;
-      case UNARY: return workingStack.size() > 0;
+      case UNARY: return workingStack.size() > 0 && __getLastActionType() != ActionType.UNARY;
       case REDUCE: return workingStack.size() > 1;
       case FINISH: return wordQueue.size() == 0 && workingStack.size() == 1;
     }
     return false;
+  }
+
+  private ActionType __getLastActionType() {
+    return actions.size() == 0 ? null : actions.get(actions.size()-1).getActionType();
   }
 
   private void processSHIFT() throws IllegalStateException {

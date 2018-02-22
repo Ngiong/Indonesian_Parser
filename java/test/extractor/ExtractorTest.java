@@ -18,7 +18,7 @@ public class ExtractorTest {
   @Test
   public void getParsingActionTest() {
     ParseTree pt = parseTreeFactory.getParseTree(VALID_1, true);
-    List<Action> actions = ActionExtractor.getParsingActions(pt);
+    List<Action> actions = ActionExtractor.getParsingActions(pt, true);
     for (Action action : actions) {
       System.out.println(action);
     }
@@ -27,7 +27,7 @@ public class ExtractorTest {
   @Test
   public void shiftReduceSimTest() {
     ParseTree pt = parseTreeFactory.getParseTree(VALID_1, true);
-    List<Action> actions = ActionExtractor.getParsingActions(pt);
+    List<Action> actions = ActionExtractor.getParsingActions(pt, true);
     Stack<StackToken> workingMemory = new Stack<>();
     Queue<WordToken> wordQueue = WordTokenExtractor.getWordQueue(pt);
 

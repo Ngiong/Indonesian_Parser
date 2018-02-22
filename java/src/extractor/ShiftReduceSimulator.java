@@ -63,5 +63,5 @@ public class ShiftReduceSimulator {
     workingStack.push(item);
   }
 
-  private void processFINISH() { } // TODO
+  private void processFINISH() { /** DO NOTHING */ }
 }

@@ -43,97 +43,93 @@ public enum FeatureTemplate {
       case TRIGRAM: featureId = extractTRIGRAM(workingStack, wordQueue); break;
     }
 
-    return new Feature(featureId);
+    return new Feature(featureId.toUpperCase());
   }
 
   private String extractUNIGRAM(Stack<StackToken> workingStack, Queue<WordToken> wordQueue) {
-    String template = this.toString();
-    int idx = Character.getNumericValue(template.charAt(1));
-    String result = null;
+    return extractUNIGRAM(workingStack, wordQueue, this.toString());
+  }
 
-    String[] templateTokens = template.split("_");
-    String first = null, second = null;
-
-    if (templateTokens[0].contains("S")) {
-      StackToken token = null;
-      if (workingStack.size() >= idx + 1) {
-        token = workingStack.get(workingStack.size()-1-idx);
-      }
-
-      if (type == FeatureType.UNIGRAM_PLUS && token != null) {
-        if (token.getPrevs() == null) token = null;
-        else {
-          char move = template.charAt(2);
-          switch (move) {
-            case 'L': case 'U': token = token.getPrevs()[0]; break;
-            case 'R': token = (token.getPrevs().length == 2) ? token.getPrevs()[1] : null; break;
-          }
-        }
-      }
-
-      if (token == null) result = templateTokens[0] + ".NULL";
-      else {
-        first = (templateTokens[1].equals("T") ? token.getHeadWord().getTag().toString() : token.getHeadWord().getWord());
-        second = (token.getLabel() == null) ? token.getHeadWord().getTag().toString() : token.getLabel().toString();
-        result = templateTokens[0] + "." + first + "." + second;
-      }
-
-    } else { // "Q"
-      WordToken token = null;
-      if (wordQueue.size() >= idx + 1) {
-        Iterator<WordToken> it = wordQueue.iterator();
-        for (int i = 0; i < idx+1; i++) token = it.next();
-      }
-      if (token == null) result = templateTokens[0] + ".NULL";
-      else result = templateTokens[0] + "." + token.getWord() + "." + token.getTag();
-    }
-
-    return result;
+  private String extractUNIGRAM(Stack<StackToken> workingStack, Queue<WordToken> wordQueue, String unigramTemplate) {
+    if (unigramTemplate.charAt(0) == 'S') return __extractFromStack(workingStack, unigramTemplate);
+    else return __extractFromQueue(wordQueue, unigramTemplate);
   }
 
   private String extractBIGRAM(Stack<StackToken> workingStack, Queue<WordToken> wordQueue) {
-    return null;
+    String template = this.toString();
+    String[] templateTokens = template.split("_");
+
+    String first = extractUNIGRAM(workingStack, wordQueue, templateTokens[0] + "_" + templateTokens[1]);
+    String second = extractUNIGRAM(workingStack, wordQueue, templateTokens[2] + "_" + templateTokens[3]);
+    return first + "." + second;
   }
 
   private String extractTRIGRAM(Stack<StackToken> workingStack, Queue<WordToken> wordQueue) {
-    return null;
+    String template = this.toString();
+    String[] templateTokens = template.split("_");
+
+    String first = extractUNIGRAM(workingStack, wordQueue, templateTokens[0] + "_" + templateTokens[1]);
+    String second = extractUNIGRAM(workingStack, wordQueue, templateTokens[2] + "_" + templateTokens[3]);
+    String third = extractUNIGRAM(workingStack, wordQueue, templateTokens[4] + "_" + templateTokens[5]);
+    return first + "." + second + "." + third;
+  }
+
+  private String __extractFromStack(Stack<StackToken> workingStack, String template) {
+    String[] templateTokens = template.split("_");
+    int idx = Character.getNumericValue(template.charAt(1));
+    String result = null;
+
+    StackToken token = null;
+    if (workingStack.size() >= idx + 1) // stack size >= template yg diminta (bisa)
+      token = workingStack.get(workingStack.size()-1-idx);
+
+    if (type == FeatureType.UNIGRAM_PLUS && token != null) {
+      if (token.getPrevs() == null) token = null;
+      else {
+        char move = template.charAt(2);
+        switch (move) {
+          case 'L': case 'U': token = token.getPrevs()[0]; break;
+          case 'R': token = (token.getPrevs().length == 2) ? token.getPrevs()[1] : null; break;
+        }
+      }
+    }
+
+    if (token == null) result = templateTokens[0] + ".NULL";
+    else {
+      result = templateTokens[0];
+      for (int i = 1; i < templateTokens.length; i++) {
+        switch (templateTokens[i]) {
+          case "T": result += "." + token.getHeadWord().getTag().toString(); break;
+          case "W": result += "." + token.getHeadWord().getWord(); break;
+          case "C":
+            if (token.getLabel() == null) result += "." + token.getHeadWord().getTag().toString();
+            else result += token.getLabel().toString(); break;
+        }
+      }
+    }
+    return result;
+  }
+
+  private String __extractFromQueue(Queue<WordToken> wordQueue, String template) {
+    String[] templateTokens = template.split("_");
+    int idx = Character.getNumericValue(template.charAt(1));
+    String result = null;
+
+    WordToken token = null;
+    if (wordQueue.size() >= idx + 1) { // queue size >= template yang diminta (bisa)
+      Iterator<WordToken> it = wordQueue.iterator();
+      for (int i = 0; i < idx+1; i++) token = it.next();
+    }
+    if (token == null) result = templateTokens[0] + ".NULL";
+    else {
+      result = templateTokens[0];
+      for (int i = 1; i < templateTokens.length; i++) {
+        switch (templateTokens[i]) {
+          case "W": result += "." + token.getWord(); break;
+          case "T": result += "." + token.getTag(); break;
+        }
+      }
+    }
+    return result;
   }
 }
-
-
-//    if (template.charAt(0) == 'S') {
-//      StackToken token = null;
-//      if (workingStack.size() >= idx + 1) token = workingStack.get(workingStack.size()-1-idx);
-//      else if (type == FeatureType.UNIGRAM_PLUS) return template.substring(0, 3) + ".NULL";
-//      else return template.substring(0, 2) + ".NULL";
-//
-//      if (type == FeatureType.UNIGRAM_PLUS && token.getPrevs() != null) {
-//        char move = template.charAt(2);
-//        switch (move) {
-//          case 'L': case 'U': token = token.getPrevs()[0]; break;
-//          case 'R': token = (token.getPrevs().length == 2) ? token.getPrevs()[1] : null; break;
-//        }
-//        WordToken word = token.getHeadWord(); Label label = token.getLabel();
-//        if (label == null) label = word.getTag();
-//        result = template.substring(0, 3) + "." + word.getWord() + "." + label.toString();
-//
-//      } else if (type == FeatureType.UNIGRAM_PLUS && token.getPrevs() == null) {
-//        result = template.substring(0, 3) + ".NULL";
-//
-//      } else { // type == UNIGRAM
-//        WordToken word = token.getHeadWord(); Label label = token.getLabel();
-//        if (label == null) label = word.getTag();
-//        result = template.substring(0, 3) + "." + word.getWord() + "." + label.toString();
-//      }
-//
-//    } else if (template.charAt(0) == 'Q') {
-//      WordToken token = null;
-//      if (wordQueue.size() < idx + 1) token = null;
-//      else { // size >= idx + 1
-//        Iterator<WordToken> it = wordQueue.iterator();
-//        for (int i = 0; i < idx+1; i++) token = it.next();
-//      }
-//
-//      if (token == null) result = template.substring(0, 2) + ".NULL";
-//      else result = template.substring(0, 2) + "." + token.getWord() + "." + token.getTag();
-//    }

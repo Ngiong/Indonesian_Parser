@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ActionExtractor {
-  public static List<Action> getParsingActions(ParseTree tree) {
+  public static List<Action> getParsingActions(ParseTree tree, boolean isRoot) {
     List<Action> result = new ArrayList<>();
     if (tree.isLeaf()) {
       WordToken wordToken = new WordToken(tree.getWord(), POSTag.valueOf(tree.getNodeTag()));
       result.add(Action.get(ActionType.SHIFT, null));
     } else {
       List<List<Action>> childActions = new ArrayList<>();
-      for (ParseTree child : tree.getChildren()) childActions.add(getParsingActions(child));
+      for (ParseTree child : tree.getChildren()) childActions.add(getParsingActions(child, false));
       result = childActions.stream().flatMap(List::stream).collect(Collectors.toList());
 
       if (tree.getChildren().size() == 1)
@@ -24,6 +24,7 @@ public class ActionExtractor {
         result.add(Action.get(ActionType.REDUCE, ConstituentLabel.valueOf(tree.getNodeTag())));
     }
 
+    if (isRoot) result.add(Action.get(ActionType.FINISH, null));
     return result;
   }
 }
