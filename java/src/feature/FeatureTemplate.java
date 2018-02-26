@@ -43,7 +43,7 @@ public enum FeatureTemplate {
       case TRIGRAM: featureId = extractTRIGRAM(workingStack, wordQueue); break;
     }
 
-    return new Feature(featureId.toUpperCase());
+    return new Feature(featureId.toUpperCase(), this);
   }
 
   private String extractUNIGRAM(Stack<StackToken> workingStack, Queue<WordToken> wordQueue) {
@@ -103,7 +103,7 @@ public enum FeatureTemplate {
           case "W": result += "." + token.getHeadWord().getWord(); break;
           case "C":
             if (token.getLabel() == null) result += "." + token.getHeadWord().getTag().toString();
-            else result += token.getLabel().toString(); break;
+            else result += "." + token.getLabel().toString(); break;
         }
       }
     }

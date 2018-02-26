@@ -22,6 +22,12 @@ public class MainParser {
     perceptron = Perceptron.loadAsReadOnly(perceptronFile);
   }
 
+  public MainParser(Perceptron p, int beamSize) {
+    agenda = new Agenda(beamSize);
+    featureTemplateSet = new FeatureTemplateSet(); featureTemplateSet.useAll();
+    perceptron = p;
+  }
+
   public void parse(Queue<WordToken> queue) { // TODO : Return ParseTree
     agenda.push(new ParseState(queue));
 

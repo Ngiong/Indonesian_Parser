@@ -11,7 +11,9 @@ public class PerceptronTest {
   }
 
   @Test
-  public void perceptronPredictTest() {
-
+  public void perceptronSerializeTest() {
+    Perceptron p = new Perceptron("corpus/sample.tre", 1);
+    p.train(3, null);
+    p.serializeToFile("models/sample_1");
   }
 }

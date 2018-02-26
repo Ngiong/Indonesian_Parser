@@ -68,14 +68,14 @@ public class ParseTree {
     // Last TWO Children
     ParseTree bottom = new ParseTree(BRACKETS, USING_BINARY_NODES);
     bottom.addChildren(CHILDREN.get(numOfChildren-2), CHILDREN.get(numOfChildren-1));
-    bottom.NODE_TAG = intermediateTag; // bottom.WORD = "INSERT_WORD_HERE";
+    bottom.NODE_TAG = intermediateTag;
 
     // Intermediate Stage
     ParseTree current;
     for (int i = numOfChildren-3; i >= 1; i--) {
       current = new ParseTree(BRACKETS, USING_BINARY_NODES);
       current.addChildren(CHILDREN.get(i), bottom);
-      current.NODE_TAG = intermediateTag; // current.WORD = "INSERT_WORD_HERE";
+      current.NODE_TAG = intermediateTag;
 
       bottom = current;
     }
@@ -83,6 +83,7 @@ public class ParseTree {
     // First Children
     List<ParseTree> tmpChildren = new ArrayList<>();
     tmpChildren.add(CHILDREN.get(0)); tmpChildren.add(bottom);
+    // NODE_TAG = NODE_TAG
     CHILDREN = tmpChildren;
   }
 

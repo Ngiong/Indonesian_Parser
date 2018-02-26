@@ -1,5 +1,6 @@
 package beam;
 
+import java.util.Comparator;
 import java.util.PriorityQueue;
 
 public class Agenda {
@@ -7,7 +8,7 @@ public class Agenda {
   private int beamSize;
 
   public Agenda(int _beamSize) {
-    pq = new PriorityQueue<>();
+    pq = new PriorityQueue<>(Comparator.reverseOrder());
     beamSize = _beamSize;
   }
 
@@ -21,7 +22,10 @@ public class Agenda {
     }
   }
 
-  public ParseState pop() { return pq.remove(); }
+  public ParseState pop() {
+    ParseState st = pq.peek(); pq.remove(st);
+    return st;
+  }
 
   private ParseState __findLowestScoreState() {
     ParseState result = pq.peek(); int minScore = Integer.MIN_VALUE;

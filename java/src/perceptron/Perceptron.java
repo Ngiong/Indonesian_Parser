@@ -78,7 +78,7 @@ public class Perceptron {
         reader.close();
 
         if (epochSaveFilename != null)
-          writeToFile(epochSaveFilename + i);
+          serializeToFile(epochSaveFilename + i);
       }
       System.out.println("Summary: " + trainingSummary.toString());
     } catch (Exception e) {
@@ -111,8 +111,34 @@ public class Perceptron {
     return result;
   }
 
-  private static final String WRITE_TO_FILE_TAG = "[WRITE TO FILE]";
-  public void writeToFile(String filename) {
+  private static final String SERIALIZE_TO_FILE_TAG = "[SERIALIZE TO FILE]";
+  public void serializeToFile(String filename) {
+    try {
+      FileOutputStream fos = new FileOutputStream(filename + ".ser");
+      ObjectOutputStream oos = new ObjectOutputStream(fos);
+      oos.writeObject(learningParameter);
+      oos.close();
+    } catch (Exception e) {
+      System.err.println(CLASS_TAG + SERIALIZE_TO_FILE_TAG + e.getMessage());
+      e.printStackTrace();
+    }
+  }
+
+  private static final String DESERIALIZE_FROM_FILE_TAG = "[DESERIALIZE FROM FILE]";
+  public void deserializeFromFile(String filepath) {
+    try {
+      FileInputStream fis = new FileInputStream(filepath);
+      ObjectInputStream ois = new ObjectInputStream(fis);
+      learningParameter = (LearningParameter) ois.readObject();
+      ois.close();
+    } catch (Exception e) {
+      System.err.println(CLASS_TAG + DESERIALIZE_FROM_FILE_TAG + e.getMessage());
+      e.printStackTrace();
+    }
+  }
+
+  private static final String WRITE_AS_JSON_FILE_TAG = "[WRITE AS JSON FILE]";
+  public void writeAsJSONFile(String filename) {
     try {
       Gson gson = new Gson();
       String lpJson = gson.toJson(learningParameter);
@@ -122,13 +148,13 @@ public class Perceptron {
       out.close();
 
     } catch (Exception e) {
-      System.err.println(CLASS_TAG + WRITE_TO_FILE_TAG + e.getMessage());
+      System.err.println(CLASS_TAG + WRITE_AS_JSON_FILE_TAG + e.getMessage());
       e.printStackTrace();
     }
   }
 
-  private static final String READ_FROM_FILE_TAG = "[READ FROM FILE]";
-  public void readFromFile(String filepath) {
+  private static final String READ_FROM_JSON_FILE_TAG = "[READ FROM JSON FILE]";
+  public void readFromJSONFile(String filepath) {
     try {
       BufferedReader reader = new BufferedReader(new FileReader(filepath));
 
@@ -136,7 +162,7 @@ public class Perceptron {
       learningParameter = gson.fromJson(reader, LearningParameter.class);
 
     } catch (Exception e) {
-      System.err.println(CLASS_TAG + READ_FROM_FILE_TAG + e.getMessage());
+      System.err.println(CLASS_TAG + READ_FROM_JSON_FILE_TAG + e.getMessage());
       e.printStackTrace();
     }
   }
@@ -144,7 +170,7 @@ public class Perceptron {
   private static final String LOAD_AS_READ_ONLY_TAG = "[LOAD AS READ ONLY]";
   public static Perceptron loadAsReadOnly(String filepath) {
     Perceptron result = new Perceptron();
-    result.readFromFile(filepath);
+    result.deserializeFromFile(filepath);
     System.out.println(CLASS_TAG + LOAD_AS_READ_ONLY_TAG + "Perceptron has been loaded successfully.");
     return result;
   }

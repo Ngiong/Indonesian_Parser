@@ -12,7 +12,7 @@ public class ParseState implements Comparable<ParseState> {
   private int score;
   private List<Action> actions;
 
-  ParseState(Queue<WordToken> words) {
+  public ParseState(Queue<WordToken> words) {
     workingStack = new Stack<>();
     wordQueue = words;
     isFinished = false;
