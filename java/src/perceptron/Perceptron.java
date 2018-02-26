@@ -78,7 +78,7 @@ public class Perceptron {
         reader.close();
 
         if (epochSaveFilename != null)
-          serializeToFile(epochSaveFilename + i);
+          writeAsJSONFile(epochSaveFilename + i);
       }
       System.out.println("Summary: " + trainingSummary.toString());
     } catch (Exception e) {
@@ -170,7 +170,7 @@ public class Perceptron {
   private static final String LOAD_AS_READ_ONLY_TAG = "[LOAD AS READ ONLY]";
   public static Perceptron loadAsReadOnly(String filepath) {
     Perceptron result = new Perceptron();
-    result.deserializeFromFile(filepath);
+    result.readFromJSONFile(filepath);
     System.out.println(CLASS_TAG + LOAD_AS_READ_ONLY_TAG + "Perceptron has been loaded successfully.");
     return result;
   }

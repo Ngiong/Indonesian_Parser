@@ -11,7 +11,7 @@ import java.util.Queue;
 public class MainParserTest {
   @Test
   public void parseTest() {
-    MainParser mainParser = new MainParser("models/sample_1.ser", 3);
+    MainParser mainParser = new MainParser("models/unigram_4.json", 1);
 
     Queue<WordToken> wordQueue = new LinkedList<>();
 
