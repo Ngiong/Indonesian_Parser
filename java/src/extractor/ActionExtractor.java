@@ -11,8 +11,7 @@ public class ActionExtractor {
   public static List<Action> getParsingActions(ParseTree tree, boolean isRoot) {
     List<Action> result = new ArrayList<>();
     if (tree.isLeaf()) {
-      WordToken wordToken = new WordToken(tree.getWord(), POSTag.valueOf(tree.getNodeTag()));
-      result.add(Action.get(ActionType.SHIFT, null));
+      result.add(Action.SHIFT);
     } else {
       List<List<Action>> childActions = new ArrayList<>();
       for (ParseTree child : tree.getChildren()) childActions.add(getParsingActions(child, false));
@@ -24,7 +23,7 @@ public class ActionExtractor {
         result.add(Action.get(ActionType.REDUCE, ConstituentLabel.valueOf(tree.getNodeTag())));
     }
 
-    if (isRoot) result.add(Action.get(ActionType.FINISH, null));
+    if (isRoot) result.add(Action.FINISH);
     return result;
   }
 }

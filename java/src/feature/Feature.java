@@ -3,6 +3,7 @@ package feature;
 import datatype.Action;
 
 public class Feature {
+  public static final String DELIMITER = "#";
   private final String featureId;
   private final FeatureTemplate template;
 
@@ -15,7 +16,7 @@ public class Feature {
     return featureId;
   }
 
-  public String toString() { return Integer.toString(template.ordinal()) + "." + featureId; }
+  public String toString() { return Integer.toString(template.ordinal()) + DELIMITER + featureId; }
 
-  public String featureActionString(Action action) { return this.toString() + "." + action.toString(); }
+  public String featureActionString(Action action) { return this.toString() + DELIMITER + action.toString(); }
 }

@@ -28,6 +28,7 @@ public enum FeatureTemplate {
   S0_C_S1_C_S2_C(FeatureType.TRIGRAM), S0_W_S1_C_S2_C(FeatureType.TRIGRAM), S0_C_S1_W_S2_C(FeatureType.TRIGRAM), S0_C_S1_C_S2_W(FeatureType.TRIGRAM),
   S0_C_S1_C_Q0_T(FeatureType.TRIGRAM), S0_W_S1_C_Q0_T(FeatureType.TRIGRAM), S0_C_S1_W_Q0_T(FeatureType.TRIGRAM), S0_C_S1_C_Q0_W(FeatureType.TRIGRAM);
 
+  public static final String DELIMITER = "_";
   private FeatureType type;
 
   FeatureTemplate(FeatureType ft) { type = ft; }
@@ -57,25 +58,25 @@ public enum FeatureTemplate {
 
   private String extractBIGRAM(Stack<StackToken> workingStack, Queue<WordToken> wordQueue) {
     String template = this.toString();
-    String[] templateTokens = template.split("_");
+    String[] templateTokens = template.split(FeatureTemplate.DELIMITER);
 
-    String first = extractUNIGRAM(workingStack, wordQueue, templateTokens[0] + "_" + templateTokens[1]);
-    String second = extractUNIGRAM(workingStack, wordQueue, templateTokens[2] + "_" + templateTokens[3]);
-    return first + "." + second;
+    String first = extractUNIGRAM(workingStack, wordQueue, templateTokens[0] + FeatureTemplate.DELIMITER + templateTokens[1]);
+    String second = extractUNIGRAM(workingStack, wordQueue, templateTokens[2] + FeatureTemplate.DELIMITER + templateTokens[3]);
+    return first + Feature.DELIMITER + second;
   }
 
   private String extractTRIGRAM(Stack<StackToken> workingStack, Queue<WordToken> wordQueue) {
     String template = this.toString();
-    String[] templateTokens = template.split("_");
+    String[] templateTokens = template.split(FeatureTemplate.DELIMITER);
 
-    String first = extractUNIGRAM(workingStack, wordQueue, templateTokens[0] + "_" + templateTokens[1]);
-    String second = extractUNIGRAM(workingStack, wordQueue, templateTokens[2] + "_" + templateTokens[3]);
-    String third = extractUNIGRAM(workingStack, wordQueue, templateTokens[4] + "_" + templateTokens[5]);
-    return first + "." + second + "." + third;
+    String first = extractUNIGRAM(workingStack, wordQueue, templateTokens[0] + FeatureTemplate.DELIMITER + templateTokens[1]);
+    String second = extractUNIGRAM(workingStack, wordQueue, templateTokens[2] + FeatureTemplate.DELIMITER + templateTokens[3]);
+    String third = extractUNIGRAM(workingStack, wordQueue, templateTokens[4] + FeatureTemplate.DELIMITER + templateTokens[5]);
+    return first + Feature.DELIMITER + second + Feature.DELIMITER + third;
   }
 
   private String __extractFromStack(Stack<StackToken> workingStack, String template) {
-    String[] templateTokens = template.split("_");
+    String[] templateTokens = template.split(FeatureTemplate.DELIMITER);
     int idx = Character.getNumericValue(template.charAt(1));
     String result = null;
 
@@ -111,7 +112,7 @@ public enum FeatureTemplate {
   }
 
   private String __extractFromQueue(Queue<WordToken> wordQueue, String template) {
-    String[] templateTokens = template.split("_");
+    String[] templateTokens = template.split(FeatureTemplate.DELIMITER);
     int idx = Character.getNumericValue(template.charAt(1));
     String result = null;
 

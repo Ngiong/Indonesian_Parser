@@ -5,7 +5,8 @@ import datatype.StackToken;
 import datatype.WordToken;
 import feature.Feature;
 import feature.FeatureTemplateSet;
-import perceptron.Perceptron;
+import perceptron.v1.Perceptron;
+import perceptron.v2.PerceptronV2;
 
 import java.util.List;
 import java.util.Queue;
@@ -14,18 +15,12 @@ import java.util.Stack;
 public class MainParser {
   private Agenda agenda;
   private FeatureTemplateSet featureTemplateSet;
-  private Perceptron perceptron;
+  private PerceptronV2 perceptron;
 
   public MainParser(String perceptronFile, int beamSize) {
     agenda = new Agenda(beamSize);
     featureTemplateSet = new FeatureTemplateSet(); featureTemplateSet.useAll();
-    perceptron = Perceptron.loadAsReadOnly(perceptronFile);
-  }
-
-  public MainParser(Perceptron p, int beamSize) {
-    agenda = new Agenda(beamSize);
-    featureTemplateSet = new FeatureTemplateSet(); featureTemplateSet.useAll();
-    perceptron = p;
+    perceptron = new PerceptronV2(perceptronFile);
   }
 
   public void parse(Queue<WordToken> queue) { // TODO : Return ParseTree
@@ -48,8 +43,7 @@ public class MainParser {
     Queue<WordToken> wordQueue = state.getWordQueue();
 
     List<Feature> extractedFeatures = featureTemplateSet.extract(workingStack, wordQueue);
-    List<Action> allActions = Action.getAllActions();
-    for (Action action : allActions) {
+    for (Action action : Action.values()) {
       if (state.canDo(action)) {
         int actionScore = perceptron.score(extractedFeatures, action);
         agenda.push(new ParseState(state, action, actionScore));
