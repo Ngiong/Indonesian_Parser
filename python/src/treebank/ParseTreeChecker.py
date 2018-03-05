@@ -1,6 +1,8 @@
 from src.parser.LineMachine import LineMachine
 from src.parser.ParseTree import ParseTree
 
+import const
+
 class ParseTreeChecker(object):
     def __init__(self, filepath, accepted_filename, rejected_filename):
         self.filepath = filepath
@@ -27,7 +29,7 @@ class ParseTreeChecker(object):
         pt = ParseTree(brackets)
         try:
             pt.makeTree()
-            check_result = pt.checkTree()
+            check_result = ParseTreeChecker.__checkTree(pt)
 
             if check_result: print(brackets, file=self.accepted)
             else:
@@ -41,10 +43,18 @@ class ParseTreeChecker(object):
             print(brackets, file=self.rejected)
             print('REASON: ', err, file=self.rejected)
 
-
-ptc = ParseTreeChecker(
-    '../../output_combiner/new_combined_2.tre',
-    '../../output_checker/accepted_2.tre',
-    '../../output_checker/rejected_with_reason_2.tre'
-)
-ptc.execute_checker()
+    @staticmethod
+    def __checkTree(self, parseTree):
+        if parseTree.IS_LEAF:
+            return parseTree.NODE_TAG in const.POS_TAGS
+        else:
+            result = parseTree.NODE_TAG in const.CONSTITUENTS
+            if result:
+                for child in parseTree.CHILDREN:
+                    check_child = child.checkTree()
+                    if not check_child:
+                        raise ValueError(child.BRACKETS)
+                        return False
+                return True
+            else:
+                return False

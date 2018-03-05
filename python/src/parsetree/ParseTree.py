@@ -1,11 +1,5 @@
-POS_TAGS = [
-    'NNP', 'VBI', 'VBT', 'NUM', 'PPO', 'NNO', 'SYM', 'CCN', 'PRN', 'ADV', 'ADJ', 'NEG', 'ADK', 'PRR', 'VBL', 'VBP', 'ART',
-    'PRK', 'KUA', '$$$', 'UNS', 'LBR', 'RBR', 'VBE', 'PRI', 'PAR', 'INT', 'CSN'
-]
+from parsetree.WordToken import WordToken
 
-PHRASE_LABELS = [
-    'AdjP', 'AdvP', 'NP', 'PP', 'VP', 'CP', 'RPN', 'S', 'SQ', 'SBAR'
-]
 
 class ParseTree(object):
     def __init__(self, tree_brackets):
@@ -38,30 +32,16 @@ class ParseTree(object):
         except:
             raise ValueError(self.BRACKETS)
 
-    def printTree(self):
-        print(' (', end='')
-        print(self.NODE_TAG, end='')
-        if self.IS_LEAF:
-            print('', self.WORD, end='')
-        if self.CHILDREN is not None:
-            for child in self.CHILDREN:
-                child.printTree()
-        print(')', end='')
-
-    def checkTree(self):
-        if self.IS_LEAF:
-            return self.NODE_TAG in POS_TAGS
+    def __str__(self):
+        result = self.NODE_TAG + " ";
+        if (self.IS_LEAF):
+            result += self.WORD
         else:
-            result = self.NODE_TAG in PHRASE_LABELS
-            if result:
-                for child in self.CHILDREN:
-                    check_child = child.checkTree()
-                    if not check_child:
-                        raise ValueError(child.BRACKETS)
-                        return False
-                return True
-            else:
-                return False
+            for child in self.CHILDREN:
+                result += "(" + str(child) + ")"
+        return result
+
+    __repr__ = __str__
 
     def __getClosingBracketIdx(self, i: int):
         j = i + 1
@@ -74,3 +54,15 @@ class ParseTree(object):
             else: j = j + 1
 
         return j if found else -1
+
+    def getWordQueue(self):
+        if (self.IS_LEAF):
+            result = list()
+            result.append(WordToken(self.WORD, self.NODE_TAG))
+            return result
+        else:
+            result = list()
+            for child in self.CHILDREN:
+                tmp = child.getWordQueue()
+                result.extend(tmp)
+            return result
