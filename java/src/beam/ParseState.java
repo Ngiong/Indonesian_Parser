@@ -14,7 +14,7 @@ public class ParseState implements Comparable<ParseState> {
 
   public ParseState(Queue<WordToken> words) {
     workingStack = new Stack<>();
-    wordQueue = words;
+    wordQueue = new LinkedList<>(words);
     isFinished = false;
     score = 0;
     actions = new ArrayList<>();

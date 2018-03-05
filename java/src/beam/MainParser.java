@@ -7,7 +7,10 @@ import feature.Feature;
 import feature.FeatureTemplateSet;
 import perceptron.v1.Perceptron;
 import perceptron.v2.PerceptronV2;
+import tree.ParseTree;
+import tree.ParseTreeFactory;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
@@ -16,14 +19,16 @@ public class MainParser {
   private Agenda agenda;
   private FeatureTemplateSet featureTemplateSet;
   private PerceptronV2 perceptron;
+  private ParseTreeFactory parseTreeFactory;
 
   public MainParser(String perceptronFile, int beamSize) {
     agenda = new Agenda(beamSize);
     featureTemplateSet = new FeatureTemplateSet(); featureTemplateSet.useAll();
     perceptron = new PerceptronV2(perceptronFile);
+    parseTreeFactory = new ParseTreeFactory();
   }
 
-  public void parse(Queue<WordToken> queue) { // TODO : Return ParseTree
+  public ParseTree parse(Queue<WordToken> queue) {
     agenda.push(new ParseState(queue));
 
     ParseState result = null;
@@ -32,10 +37,10 @@ public class MainParser {
       if (top.isFinished()) result = top;
       else expand(top);
     }
-    System.out.println("COMPLETED");
 
     List<Action> actions = result.getActions();
-    for (Action action : actions) System.out.println(action);
+    ParseTree pt = parseTreeFactory.getParseTree(queue, actions);
+    return pt;
   }
 
   private void expand(ParseState state) {

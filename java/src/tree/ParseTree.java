@@ -1,12 +1,7 @@
 package tree;
 
-import datatype.POSTag;
-import datatype.WordToken;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ParseTree {
   private final String BRACKETS;
@@ -15,11 +10,25 @@ public class ParseTree {
   private String NODE_TAG, WORD;
   private List<ParseTree> CHILDREN;
 
+  ParseTree(String nodeTag, String word) {
+    this(nodeTag + " " + word, true);
+  }
+
+  ParseTree(String label, ParseTree... children) {
+    StringJoiner sj = new StringJoiner(")(","(", ")");
+    for (ParseTree child : children) sj.add(child.toString());
+    BRACKETS = sj.toString();
+    USING_BINARY_NODES = true;
+    IS_LEAF = false;
+    NODE_TAG = label;
+    CHILDREN = Arrays.stream(children).collect(Collectors.toList());
+  }
+
   ParseTree(String _brackets, boolean _binaryNodes) {
     BRACKETS = _brackets;
     USING_BINARY_NODES = _binaryNodes;
-    CHILDREN = new ArrayList<>();
-    IS_LEAF = false;
+    IS_LEAF = __isLeaf(_brackets);
+    CHILDREN = IS_LEAF ? null : new ArrayList<>();
   }
 
   void makeTree() {
@@ -38,8 +47,8 @@ public class ParseTree {
       int j;
       for (int i = 0; i < BRACKETS.length(); i++) {
         if (BRACKETS.charAt(i) == '(') {
-          j = __getClosingBracketIdx(i);
-          ParseTree child = new ParseTree(BRACKETS.substring(i+1, j), USING_BINARY_NODES);
+          j = __getClosingBracketIdx(i); String brackets = BRACKETS.substring(i+1, j);
+          ParseTree child = new ParseTree(brackets, USING_BINARY_NODES);
           child.makeTree();
           CHILDREN.add(child);
           i = j;
@@ -56,9 +65,9 @@ public class ParseTree {
     if (IS_LEAF) result += WORD;
     else {
       for (ParseTree child : CHILDREN)
-        result += child.toString();
+        result += "(" + child.toString() + ")";
     }
-    return "(" + result + ")";
+    return result;
   }
 
   private void __binarize() {
@@ -101,6 +110,10 @@ public class ParseTree {
     }
 
     return found ? j : -1;
+  }
+
+  private boolean __isLeaf(String brackets) {
+    return brackets.chars().filter(x -> x == '(').count() == 0;
   }
 
   public boolean isLeaf() {

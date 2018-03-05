@@ -26,7 +26,7 @@ public class ParseTreeTests {
   public void testToString() {
     ParseTree parseTree;
     parseTree = parseTreeFactory.getParseTree(VALID_1, false);
-    assertTrue(parseTree.toString().contains(VALID_1));
+    assertTrue(parseTree.toString().equals(VALID_1));
   }
 
   @Test

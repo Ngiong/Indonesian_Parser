@@ -3,6 +3,7 @@ package beam;
 import datatype.POSTag;
 import datatype.WordToken;
 import org.junit.jupiter.api.Test;
+import tree.ParseTree;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -10,7 +11,7 @@ import java.util.Queue;
 public class MainParserTest {
   @Test
   public void parseTest() {
-    MainParser mainParser = new MainParser("models/all_nohead_0.json", 3);
+    MainParser mainParser = new MainParser("models/all_nohead_v2_fixed_0.json", 3);
 
     Queue<WordToken> wordQueue = new LinkedList<>();
 
@@ -18,6 +19,7 @@ public class MainParserTest {
     wordQueue.add(new WordToken("duduk", POSTag.VBT));
     wordQueue.add(new WordToken("di", POSTag.PPO));
     wordQueue.add(new WordToken("kursi", POSTag.NNO));
+    wordQueue.add(new WordToken("goyang", POSTag.ADJ));
     wordQueue.add(new WordToken(".", POSTag.SYM));
 
 //    wordQueue.add(new WordToken("Saya", POSTag.PRN));
@@ -39,6 +41,7 @@ public class MainParserTest {
 //    wordQueue.add(new WordToken("membaca", POSTag.VBT));
 //    wordQueue.add(new WordToken(".", POSTag.SYM));
 
-    mainParser.parse(wordQueue);
+    ParseTree pt = mainParser.parse(wordQueue);
+    System.out.println(pt.toString());
   }
 }
