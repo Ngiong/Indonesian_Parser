@@ -1,4 +1,4 @@
-from src.parser.CharMachine import CharMachine
+from utils.CharMachine import CharMachine
 
 
 class WordMachine(object):

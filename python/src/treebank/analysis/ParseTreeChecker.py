@@ -19,8 +19,6 @@ class ParseTreeChecker(object):
             self.__process_line(line)
             n_lines = n_lines + 1
             print('[', n_lines, ']', sep='')
-            if n_lines == 506:
-                print('CARE')
 
     def __process_line(self, brackets):
         if brackets[0] == '(':

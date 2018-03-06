@@ -4,6 +4,9 @@ from parsetree.WordToken import WordToken
 class ParseTree(object):
     def __init__(self, tree_brackets):
         self.BRACKETS = tree_brackets
+        # for indexing words (leaf nodes), required for evaluation
+        self.BEGIN_NUM = -1
+        self.END_NUM = -1
 
     def makeTree(self):
         try:
@@ -18,7 +21,6 @@ class ParseTree(object):
             else: # MAKE TREE
                 self.IS_LEAF = False
                 self.NODE_TAG = tmp[0]
-                # print('#', self.BRACKETS, self.NODE_TAG)
 
                 children = list(); i = 0
                 while i < len(self.BRACKETS):
@@ -32,16 +34,23 @@ class ParseTree(object):
         except:
             raise ValueError(self.BRACKETS)
 
-    def __str__(self):
-        result = self.NODE_TAG + " ";
+    def getWordQueue(self):
         if (self.IS_LEAF):
-            result += self.WORD
+            result = list()
+            result.append(WordToken(self.WORD, self.NODE_TAG))
+            return result
         else:
+            result = list()
             for child in self.CHILDREN:
-                result += "(" + str(child) + ")"
-        return result
+                tmp = child.getWordQueue()
+                result.extend(tmp)
+            return result
 
-    __repr__ = __str__
+    def dfs(self, process_node):
+        process_node(self)
+        if not self.IS_LEAF:
+            for child in self.CHILDREN:
+                child.dfs(process_node)
 
     def __getClosingBracketIdx(self, i: int):
         j = i + 1
@@ -55,14 +64,13 @@ class ParseTree(object):
 
         return j if found else -1
 
-    def getWordQueue(self):
+    def __str__(self):
+        result = self.NODE_TAG + " ";
         if (self.IS_LEAF):
-            result = list()
-            result.append(WordToken(self.WORD, self.NODE_TAG))
-            return result
+            result += self.WORD
         else:
-            result = list()
             for child in self.CHILDREN:
-                tmp = child.getWordQueue()
-                result.extend(tmp)
-            return result
+                result += "(" + str(child) + ")"
+        return result
+
+    __repr__ = __str__

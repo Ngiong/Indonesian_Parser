@@ -23,8 +23,3 @@ class FileCombiner(object):
         file_output = open(self.OUTPUT_PATH + output_path, 'a')
         for file_name in self.FILE_NAMES:
             file_output.write(self.getDocument(file_name) + '\n')
-
-
-fc = FileCombiner('C:\\Users\\Ngiong\\Desktop\\TugasAkhir\\input_combiner\\', 'C:\\Users\\Ngiong\\Desktop\\TugasAkhir\\output_combiner\\')
-fc.listFiles()
-fc.combine('new_combined_2.tre')
