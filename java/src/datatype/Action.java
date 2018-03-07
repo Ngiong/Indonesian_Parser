@@ -34,17 +34,7 @@ public enum Action {
   UNARY_RPN (ActionType.UNARY, ConstituentLabel.RPN),
   UNARY_S (ActionType.UNARY, ConstituentLabel.S),
   UNARY_SQ (ActionType.UNARY, ConstituentLabel.SQ),
-  UNARY_SBAR (ActionType.UNARY, ConstituentLabel.SBAR),
-  UNARY_AdjP_ (ActionType.UNARY, ConstituentLabel.AdjP_),
-  UNARY_AdvP_ (ActionType.UNARY, ConstituentLabel.AdvP_),
-  UNARY_NP_ (ActionType.UNARY, ConstituentLabel.NP_),
-  UNARY_PP_ (ActionType.UNARY, ConstituentLabel.PP_),
-  UNARY_VP_ (ActionType.UNARY, ConstituentLabel.VP_),
-  UNARY_CP_ (ActionType.UNARY, ConstituentLabel.CP_),
-  UNARY_RPN_ (ActionType.UNARY, ConstituentLabel.RPN_),
-  UNARY_S_ (ActionType.UNARY, ConstituentLabel.S_),
-  UNARY_SQ_ (ActionType.UNARY, ConstituentLabel.SQ_),
-  UNARY_SBAR_ (ActionType.UNARY, ConstituentLabel.SBAR_);
+  UNARY_SBAR (ActionType.UNARY, ConstituentLabel.SBAR);
 
   private final ActionType actionType;
   private final ConstituentLabel label;
