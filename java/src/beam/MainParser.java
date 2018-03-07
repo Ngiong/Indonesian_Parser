@@ -3,6 +3,7 @@ package beam;
 import datatype.Action;
 import datatype.StackToken;
 import datatype.WordToken;
+import extractor.WordTokenExtractor;
 import feature.Feature;
 import feature.FeatureTemplateSet;
 import perceptron.v1.Perceptron;
@@ -10,12 +11,14 @@ import perceptron.v2.PerceptronV2;
 import tree.ParseTree;
 import tree.ParseTreeFactory;
 
+import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 
 public class MainParser {
+  private static final String CLASS_TAG = "[MAIN PARSER]";
   private Agenda agenda;
   private FeatureTemplateSet featureTemplateSet;
   private PerceptronV2 perceptron;
@@ -41,6 +44,31 @@ public class MainParser {
     List<Action> actions = result.getActions();
     ParseTree pt = parseTreeFactory.getParseTree(queue, actions);
     return pt;
+  }
+
+  private static final String BATCH_PARSE_TAG = "[BATCH PARSE]";
+  public void batchParse(String treebankFilename, String outputFilename) {
+    try {
+      File outputFile = new File(outputFilename);
+      FileOutputStream fos = new FileOutputStream(outputFile);
+      BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+
+      String line;
+      BufferedReader reader = new BufferedReader(new FileReader(treebankFilename));
+      while ((line = reader.readLine()) != null) {
+        Queue<WordToken> wordQueue = WordTokenExtractor.getWordQueue(line);
+        ParseTree parsed = parse(wordQueue);
+        bw.write(parsed.toString());
+        bw.newLine();
+      }
+      bw.close();
+      reader.close();
+      
+    } catch (Exception e) {
+      System.err.println(CLASS_TAG + BATCH_PARSE_TAG + e.getMessage());
+      e.printStackTrace();
+    }
+
   }
 
   private void expand(ParseState state) {

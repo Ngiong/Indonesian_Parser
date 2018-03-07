@@ -112,29 +112,3 @@ public class PerceptronV2 {
   public void fromJSON(String filepath) { vectorParameter.fromJSON(filepath); }
   public void toJSON(String filename) { vectorParameter.toJSON(filename); }
 }
-
-//  private static final String SERIALIZE_TO_FILE_TAG = "[SERIALIZE TO FILE]";
-//  public void serializeToFile(String filename) {
-//    try {
-//      FileOutputStream fos = new FileOutputStream(filename + ".ser");
-//      ObjectOutputStream oos = new ObjectOutputStream(fos);
-//      oos.writeObject(vectorParameter);
-//      oos.close();
-//    } catch (Exception e) {
-//      System.err.println(CLASS_TAG + SERIALIZE_TO_FILE_TAG + e.getMessage());
-//      e.printStackTrace();
-//    }
-//  }
-//
-//  private static final String DESERIALIZE_FROM_FILE_TAG = "[DESERIALIZE FROM FILE]";
-//  public void deserializeFromFile(String filepath) {
-//    try {
-//      FileInputStream fis = new FileInputStream(filepath);
-//      ObjectInputStream ois = new ObjectInputStream(fis);
-//      vectorParameter = (VectorParameter) ois.readObject();
-//      ois.close();
-//    } catch (Exception e) {
-//      System.err.println(CLASS_TAG + DESERIALIZE_FROM_FILE_TAG + e.getMessage());
-//      e.printStackTrace();
-//    }
-//  }

@@ -36,4 +36,12 @@ public class ExtractorTest {
       sim.nextStep();
     }
   }
+
+  @Test
+  public void wordTokenExtractorTest() {
+    Queue<WordToken> wordQueue = WordTokenExtractor.getWordQueue(VALID_1);
+    for (WordToken token : wordQueue) {
+      System.out.println(token);
+    }
+  }
 }

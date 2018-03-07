@@ -23,4 +23,24 @@ public class WordTokenExtractor {
       return first;
     }
   }
+
+  public static Queue<WordToken> getWordQueue(String brackets) {
+    Queue<WordToken> result = new LinkedList<>();
+
+    boolean foundOpening = false;
+    int lastOpening = 0;
+    for (int i = 0; i < brackets.length(); i++) {
+      char c = brackets.charAt(i);
+      if (c == ')' && foundOpening) {
+        String[] tokens = brackets.substring(lastOpening + 1, i).split("\\s+");
+        result.add(new WordToken(tokens[1], POSTag.valueOf(tokens[0])));
+        foundOpening = false;
+      } else if (c == '(') {
+        lastOpening = i;
+        foundOpening = true;
+      }
+    }
+
+    return result;
+  }
 }
