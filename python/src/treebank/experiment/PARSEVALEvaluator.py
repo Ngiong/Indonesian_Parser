@@ -1,3 +1,5 @@
+from functools import reduce
+
 from parsetree.ParseTree import ParseTree
 
 class PARSEVALResult(object):
@@ -43,6 +45,29 @@ class PARSEVALEvaluator(object):
         recall = cnt_correct / len(gold_constituents)
 
         return PARSEVALResult(precision, recall)
+
+    def batchEvaluate(self, parsed_filename: str, gold_filename: str) -> PARSEVALResult:
+        parsed_file = open(parsed_filename, 'r')
+        gold_file = open(gold_filename, 'r')
+
+        evaluation_results = list()
+        while True:
+            parsed_brackets = parsed_file.readline()
+            gold_brackets = gold_file.readline()
+
+            if not parsed_brackets or not gold_brackets: break
+            else:
+                parsed = ParseTree(parsed_brackets); parsed.makeTree()
+                gold = ParseTree(gold_brackets); gold.makeTree()
+                evaluation_results.append(self.evaluate(parsed, gold))
+
+        avgPrecision = 0.0; avgRecall = 0.0
+        for result in evaluation_results:
+            avgPrecision += result.precision
+            avgRecall += result.recall
+        n = len(evaluation_results)
+
+        return PARSEVALResult(avgPrecision/n, avgRecall/n) # Using macro evaluation
 
     def getConstituents(self, pt: ParseTree) -> set:
         result = set()
