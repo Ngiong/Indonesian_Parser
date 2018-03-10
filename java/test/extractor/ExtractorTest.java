@@ -31,7 +31,7 @@ public class ExtractorTest {
     Stack<StackToken> workingMemory = new Stack<>();
     Queue<WordToken> wordQueue = WordTokenExtractor.getWordQueue(pt);
 
-    ShiftReduceSimulator sim = new ShiftReduceSimulator(workingMemory, wordQueue, actions);
+    FeatureExtractor sim = new FeatureExtractor(workingMemory, wordQueue, actions);
     while (sim.hasNextStep()) {
       sim.nextStep();
     }

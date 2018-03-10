@@ -1,5 +1,5 @@
-from src.parser.LineMachine import LineMachine
-from src.parser.ParseTree import ParseTree
+from utils.LineMachine import LineMachine
+
 
 class ConstituentLabelDistCounter(object):
     def __init__(self, filepath):

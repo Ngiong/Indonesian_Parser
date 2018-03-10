@@ -5,7 +5,7 @@ class SplitTestInitializer(object):
         self.treebank = open(treebank_path, 'r')
         self.vocabularies = set()
 
-    def separate(self, output_train: str, output_test: str):
+    def separate(self, output_train: str, output_test: str, test_instances = -1):
         train = open(output_train, 'w')
         test = open(output_test, 'w')
 
@@ -20,6 +20,7 @@ class SplitTestInitializer(object):
             else:
                 print(line, file=test, end='')
                 count_test += 1
+                if test_instances == count_test: break
 
     def hasOOV(self, wordTokens: list) -> bool:
         for token in wordTokens:

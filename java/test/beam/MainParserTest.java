@@ -44,4 +44,9 @@ public class MainParserTest {
     ParseTree pt = mainParser.parse(wordQueue);
     System.out.println(pt.toString());
   }
+
+  @Test
+  public void batchParseTest() {
+    
+  }
 }

@@ -5,7 +5,6 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import datatype.Action;
 import feature.Feature;
-import feature.FeatureTemplate;
 import perceptron.ParameterRepresentation;
 
 import java.io.*;

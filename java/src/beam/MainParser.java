@@ -6,13 +6,11 @@ import datatype.WordToken;
 import extractor.WordTokenExtractor;
 import feature.Feature;
 import feature.FeatureTemplateSet;
-import perceptron.v1.Perceptron;
 import perceptron.v2.PerceptronV2;
 import tree.ParseTree;
 import tree.ParseTreeFactory;
 
 import java.io.*;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Stack;

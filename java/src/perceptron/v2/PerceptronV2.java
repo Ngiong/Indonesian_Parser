@@ -4,7 +4,7 @@ import datatype.Action;
 import datatype.StackToken;
 import datatype.WordToken;
 import extractor.ActionExtractor;
-import extractor.ShiftReduceSimulator;
+import extractor.FeatureExtractor;
 import extractor.WordTokenExtractor;
 import feature.Feature;
 import javafx.util.Pair;
@@ -61,7 +61,7 @@ public class PerceptronV2 {
           workingMemory = new Stack<>();
           wordQueue = WordTokenExtractor.getWordQueue(pt);
 
-          ShiftReduceSimulator sim = new ShiftReduceSimulator(workingMemory, wordQueue, actions);
+          FeatureExtractor sim = new FeatureExtractor(workingMemory, wordQueue, actions);
           while (sim.hasNextStep()) {
             Pair<List<Feature>, Action> trainingExample = sim.nextStep();
             List<Feature> extractedFeatures = trainingExample.getKey();

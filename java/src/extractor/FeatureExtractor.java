@@ -13,13 +13,13 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 
-public class ShiftReduceSimulator {
+public class FeatureExtractor {
   private Stack<StackToken> workingStack;
   private Queue<WordToken> wordQueue;
   private Iterator<Action> actionIt;
   private FeatureTemplateSet featureTemplateSet;
 
-  public ShiftReduceSimulator(Stack<StackToken> workingStack, Queue<WordToken> wordQueue, List<Action> actions) {
+  public FeatureExtractor(Stack<StackToken> workingStack, Queue<WordToken> wordQueue, List<Action> actions) {
     this.workingStack = workingStack;
     this.wordQueue = wordQueue;
     this.actionIt = actions.iterator();

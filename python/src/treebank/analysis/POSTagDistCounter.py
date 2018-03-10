@@ -1,5 +1,5 @@
-from src.parser.LineMachine import LineMachine
-from src.parser.WordMachine import WordMachine
+from utils.LineMachine import LineMachine
+from utils.WordMachine import WordMachine
 
 
 class POSTagDistCounter(object):
