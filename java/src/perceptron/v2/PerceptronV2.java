@@ -41,7 +41,7 @@ public class PerceptronV2 {
   }
 
   private static final String TRAIN_TAG = "[TRAIN]";
-  public void train(int epochs, String epochSaveFilename) {
+  public void train(int epochs) {
     try {
       if (readOnly)
         throw new IllegalAccessException("Read-only Perceptron cannot be used for training.");
@@ -77,9 +77,6 @@ public class PerceptronV2 {
         }
         trainingSummary.add(wrongPrediction);
         reader.close();
-
-        if (epochSaveFilename != null)
-          vectorParameter.toJSON(epochSaveFilename + i);
       }
       System.out.println("Summary: " + trainingSummary.toString());
     } catch (Exception e) {

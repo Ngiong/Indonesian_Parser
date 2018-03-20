@@ -1,6 +1,7 @@
 package beam;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
 
 public class Agenda {
@@ -25,6 +26,10 @@ public class Agenda {
   public ParseState pop() {
     ParseState st = pq.peek(); pq.remove(st);
     return st;
+  }
+
+  public void pushAll(List<ParseState> states) {
+    for (ParseState state : states) push(state);
   }
 
   private ParseState __findLowestScoreState() {

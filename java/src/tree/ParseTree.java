@@ -55,7 +55,7 @@ public class ParseTree {
         }
       }
 
-      if (USING_BINARY_NODES && CHILDREN.size() > 2) binarize();
+      if (USING_BINARY_NODES && CHILDREN.size() > 2) __binarizeIOE();
     }
   }
 
@@ -119,6 +119,55 @@ public class ParseTree {
 
     if (!IS_LEAF)
       for (ParseTree child : CHILDREN) child.debinarize();
+  }
+
+  public void __binarizeIOE() {
+    int numOfChildren = CHILDREN.size();
+    String intermediateTag = NODE_TAG + "_";
+
+    // Last TWO Children
+    ParseTree bottom = new ParseTree(BRACKETS, USING_BINARY_NODES);
+    bottom.addChildren(CHILDREN.get(numOfChildren-2), CHILDREN.get(numOfChildren-1));
+    bottom.NODE_TAG = intermediateTag;
+
+    // Intermediate Stage
+    ParseTree current;
+    for (int i = numOfChildren-3; i >= 1; i--) {
+      current = new ParseTree(BRACKETS, USING_BINARY_NODES);
+      current.addChildren(CHILDREN.get(i), bottom);
+      current.NODE_TAG = intermediateTag;
+
+      bottom = current;
+    }
+
+    // First Children
+    List<ParseTree> tmpChildren = new ArrayList<>();
+    tmpChildren.add(CHILDREN.get(0)); tmpChildren.add(bottom);
+    NODE_TAG = NODE_TAG;
+    CHILDREN = tmpChildren;
+  }
+
+  public void __debinarizeIOE() { // Using Inner-Outer-End
+    if (!IS_LEAF) {
+      boolean isIntermediateNode = NODE_TAG.charAt(NODE_TAG.length() - 1) == '_';
+      if (isIntermediateNode) NODE_TAG = NODE_TAG.substring(0, NODE_TAG.length() - 1);
+
+      String intermediateNode = NODE_TAG + "_";
+      if (CHILDREN.size() == 2 && CHILDREN.get(1).NODE_TAG.equals(intermediateNode)) {
+        List<ParseTree> tmpChildren = new ArrayList<>();
+        tmpChildren.add(CHILDREN.get(0));
+        ParseTree tmp = CHILDREN.get(1);
+        while (tmp.NODE_TAG.equals(intermediateNode)) {
+          tmpChildren.add(tmp.CHILDREN.get(0));
+          tmp = tmp.CHILDREN.get(1);
+        }
+        tmpChildren.add(tmp);
+
+        CHILDREN = tmpChildren;
+      }
+
+      for (ParseTree child : CHILDREN) child.__debinarizeIOE();
+    }
   }
 
   private int __getClosingBracketIdx(int i) {

@@ -11,36 +11,39 @@ import tree.ParseTree;
 import tree.ParseTreeFactory;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 
 public class MainParser {
   private static final String CLASS_TAG = "[MAIN PARSER]";
-  private Agenda agenda;
+  private final int BEAM_SIZE;
   private FeatureTemplateSet featureTemplateSet;
   private PerceptronV2 perceptron;
   private ParseTreeFactory parseTreeFactory;
 
   public MainParser(String perceptronFile, int beamSize) {
-    agenda = new Agenda(beamSize);
+    BEAM_SIZE = beamSize;
     featureTemplateSet = new FeatureTemplateSet(); featureTemplateSet.useAll();
     perceptron = new PerceptronV2(perceptronFile);
     parseTreeFactory = new ParseTreeFactory();
   }
 
   public ParseTree parse(Queue<WordToken> queue) {
+    Agenda agenda = new Agenda(BEAM_SIZE);
     agenda.push(new ParseState(queue));
 
     ParseState result = null;
     while (result == null) {
       ParseState top = agenda.pop();
       if (top.isFinished()) result = top;
-      else expand(top);
+      else agenda.pushAll(expand(top));
     }
 
     List<Action> actions = result.getActions();
     ParseTree pt = parseTreeFactory.getParseTree(queue, actions);
+    pt.__debinarizeIOE();
     return pt;
   }
 
@@ -51,13 +54,14 @@ public class MainParser {
       FileOutputStream fos = new FileOutputStream(outputFile);
       BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
-      String line;
+      String line; int idx = 0;
       BufferedReader reader = new BufferedReader(new FileReader(treebankFilename));
       while ((line = reader.readLine()) != null) {
         Queue<WordToken> wordQueue = WordTokenExtractor.getWordQueue(line);
         ParseTree parsed = parse(wordQueue);
         bw.write(parsed.toString());
         bw.newLine();
+        System.out.println("Parsed " + ++idx + " sentences.");
       }
       bw.close();
       reader.close();
@@ -69,7 +73,8 @@ public class MainParser {
 
   }
 
-  private void expand(ParseState state) {
+  private List<ParseState> expand(ParseState state) {
+    List<ParseState> result = new ArrayList<>();
     Stack<StackToken> workingStack = state.getWorkingStack();
     Queue<WordToken> wordQueue = state.getWordQueue();
 
@@ -77,8 +82,9 @@ public class MainParser {
     for (Action action : Action.values()) {
       if (state.canDo(action)) {
         int actionScore = perceptron.score(extractedFeatures, action);
-        agenda.push(new ParseState(state, action, actionScore));
+        result.add(new ParseState(state, action, actionScore));
       }
     }
+    return result;
   }
 }
