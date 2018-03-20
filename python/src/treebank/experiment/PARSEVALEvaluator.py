@@ -6,12 +6,12 @@ class PARSEVALResult(object):
     def __init__(self, prec: float, recall: float):
         self.precision = prec
         self.recall = recall
-        self.f1_score = 2.0 * (prec * recall) / (prec + recall)
+        self.f1_score = 0.0 if prec + recall == 0.0 else (2.0 * (prec * recall) / (prec + recall))
 
     def __str__(self):
-        p = '{0:.2f}'.format(self.precision)
-        r = '{0:.2f}'.format(self.recall)
-        f1 = '{0:.2f}'.format(self.f1_score)
+        p = '{0:.6f}'.format(self.precision)
+        r = '{0:.6f}'.format(self.recall)
+        f1 = '{0:.6f}'.format(self.f1_score)
         return "(P: " + p + ", R: " + r  + ", F1: " + f1 + ")"
 
     __repr__ = __str__

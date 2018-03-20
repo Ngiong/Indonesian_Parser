@@ -34,6 +34,14 @@ class ParseTree(object):
         except:
             raise ValueError(self.BRACKETS)
 
+    def getHeight(self):
+        if self.IS_LEAF: return 0
+        else:
+            maxHeight = -1
+            for child in self.CHILDREN:
+                maxHeight = max(maxHeight, child.getHeight())
+            return maxHeight + 1;
+
     def getWordQueue(self):
         if (self.IS_LEAF):
             result = list()

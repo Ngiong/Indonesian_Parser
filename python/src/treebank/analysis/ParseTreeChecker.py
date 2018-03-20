@@ -28,8 +28,9 @@ class ParseTreeChecker(object):
         try:
             pt.makeTree()
             check_result = ParseTreeChecker.__checkTree(pt)
+            tree_height = pt.getHeight()
 
-            if check_result:
+            if check_result and tree_height > 2:
                 print(brackets, file=self.accepted)
             else:
                 self.count_rejected += 1
