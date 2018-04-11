@@ -20,7 +20,7 @@ class SplitTestInitializer(object):
             else:
                 print(line, file=test, end='')
                 count_test += 1
-                if test_instances == count_test: break
+                if test_instances != -1 and test_instances == count_test: break
 
     def hasOOV(self, wordTokens: list) -> bool:
         for token in wordTokens:

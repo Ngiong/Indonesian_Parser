@@ -60,6 +60,15 @@ class ParseTree(object):
             for child in self.CHILDREN:
                 child.dfs(process_node)
 
+    def printPretty(self, startIndent: int, incrementIndent: int):
+        tmpIndent = ' ' * startIndent
+        if self.IS_LEAF:
+            print(tmpIndent + '(' + self.NODE_TAG + " " + self.WORD + ")")
+        else:
+          print(' '*startIndent + '(' + self.NODE_TAG)
+          for child in self.CHILDREN: child.printPretty(startIndent+incrementIndent, incrementIndent)
+          print(tmpIndent + ')')
+
     def __getClosingBracketIdx(self, i: int):
         j = i + 1
         bracket_cnt = 1; found = False
