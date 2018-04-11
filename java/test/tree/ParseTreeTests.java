@@ -55,8 +55,14 @@ public class ParseTreeTests {
     ParseTree parseTree;
     parseTree = parseTreeFactory.getParseTree(BINARY_IOE_2, false);
     System.out.println(parseTree);
-    parseTree.__debinarizeIOE();
+    parseTree.debinarize();
     System.out.println(parseTree);
     assertFalse(ParseTreeChecker.isBinaryTree(parseTree));
+  }
+
+  @Test
+  public void testPrintPretty() {
+    ParseTree pt = parseTreeFactory.getParseTree(VALID_1, false);
+    pt.printPretty(4, 2);
   }
 }

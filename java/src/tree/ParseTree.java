@@ -55,7 +55,7 @@ public class ParseTree {
         }
       }
 
-      if (USING_BINARY_NODES && CHILDREN.size() > 2) __binarizeIOE();
+      if (USING_BINARY_NODES && CHILDREN.size() > 2) binarize();
     }
   }
 
@@ -70,58 +70,18 @@ public class ParseTree {
     return result;
   }
 
-  public void binarize() {
-    int numOfChildren = CHILDREN.size();
-    String intermediateTag = NODE_TAG + "_";
-
-    // Last TWO Children
-    ParseTree bottom = new ParseTree(BRACKETS, USING_BINARY_NODES);
-    bottom.addChildren(CHILDREN.get(numOfChildren-2), CHILDREN.get(numOfChildren-1));
-    bottom.NODE_TAG = NODE_TAG;
-
-    // Intermediate Stage
-    ParseTree current;
-    for (int i = numOfChildren-3; i >= 1; i--) {
-      current = new ParseTree(BRACKETS, USING_BINARY_NODES);
-      current.addChildren(CHILDREN.get(i), bottom);
-      current.NODE_TAG = intermediateTag;
-
-      bottom = current;
+  public void printPretty(int startIndent, int incrementIndent) {
+    char[] spaces = new char[startIndent]; Arrays.fill(spaces, ' ');
+    String indent = new String(spaces);
+    if (IS_LEAF) System.out.println(indent + "(" + NODE_TAG + " " + WORD + ")");
+    else {
+      System.out.println(indent + "(" + NODE_TAG);
+      for (ParseTree child : CHILDREN) child.printPretty(startIndent+incrementIndent, incrementIndent);
+      System.out.println(indent + ")");
     }
-
-    // First Children
-    List<ParseTree> tmpChildren = new ArrayList<>();
-    tmpChildren.add(CHILDREN.get(0)); tmpChildren.add(bottom);
-    NODE_TAG = intermediateTag;
-    CHILDREN = tmpChildren;
   }
 
-  public void debinarize() {
-    boolean isIntermediateNode = NODE_TAG.charAt(NODE_TAG.length() - 1) == '_';
-
-    if (isIntermediateNode) {
-      String originalNodeTag = NODE_TAG.substring(0, NODE_TAG.length() - 1);
-      List<ParseTree> tmpChildren = new ArrayList<>();
-      ParseTree tmp = this;
-      while (tmp.NODE_TAG.equals(this.NODE_TAG)) {
-        tmpChildren.add(tmp.CHILDREN.get(0)); // add left child
-        tmp = tmp.CHILDREN.get(1); // continue iteration to right child
-      }
-
-      if (tmp.NODE_TAG.equals(originalNodeTag))  // Case: A* (X)(A (X)(X))
-        tmpChildren.addAll(tmp.CHILDREN);
-      else // Case: A* (X)(B (X)(X))
-        tmpChildren.add(tmp);
-
-      CHILDREN = tmpChildren;
-      NODE_TAG = originalNodeTag;
-    }
-
-    if (!IS_LEAF)
-      for (ParseTree child : CHILDREN) child.debinarize();
-  }
-
-  public void __binarizeIOE() {
+  public void binarize() { // Using Inner-Outer-End
     int numOfChildren = CHILDREN.size();
     String intermediateTag = NODE_TAG + "_";
 
@@ -147,7 +107,7 @@ public class ParseTree {
     CHILDREN = tmpChildren;
   }
 
-  public void __debinarizeIOE() { // Using Inner-Outer-End
+  public void debinarize() { // Using Inner-Outer-End
     if (!IS_LEAF) {
       boolean isIntermediateNode = NODE_TAG.charAt(NODE_TAG.length() - 1) == '_';
       if (isIntermediateNode) NODE_TAG = NODE_TAG.substring(0, NODE_TAG.length() - 1);
@@ -166,7 +126,7 @@ public class ParseTree {
         CHILDREN = tmpChildren;
       }
 
-      for (ParseTree child : CHILDREN) child.__debinarizeIOE();
+      for (ParseTree child : CHILDREN) child.debinarize();
     }
   }
 
@@ -210,3 +170,54 @@ public class ParseTree {
     for (int i = 0; i < parseTrees.length; i++) CHILDREN.add(parseTrees[i]);
   }
 }
+
+//  public void binarizeIOB() {
+//    int numOfChildren = CHILDREN.size();
+//    String intermediateTag = NODE_TAG + "_";
+//
+//    // Last TWO Children
+//    ParseTree bottom = new ParseTree(BRACKETS, USING_BINARY_NODES);
+//    bottom.addChildren(CHILDREN.get(numOfChildren-2), CHILDREN.get(numOfChildren-1));
+//    bottom.NODE_TAG = NODE_TAG;
+//
+//    // Intermediate Stage
+//    ParseTree current;
+//    for (int i = numOfChildren-3; i >= 1; i--) {
+//      current = new ParseTree(BRACKETS, USING_BINARY_NODES);
+//      current.addChildren(CHILDREN.get(i), bottom);
+//      current.NODE_TAG = intermediateTag;
+//
+//      bottom = current;
+//    }
+//
+//    // First Children
+//    List<ParseTree> tmpChildren = new ArrayList<>();
+//    tmpChildren.add(CHILDREN.get(0)); tmpChildren.add(bottom);
+//    NODE_TAG = intermediateTag;
+//    CHILDREN = tmpChildren;
+//  }
+//
+//  public void debinarizeIOB() {
+//    boolean isIntermediateNode = NODE_TAG.charAt(NODE_TAG.length() - 1) == '_';
+//
+//    if (isIntermediateNode) {
+//      String originalNodeTag = NODE_TAG.substring(0, NODE_TAG.length() - 1);
+//      List<ParseTree> tmpChildren = new ArrayList<>();
+//      ParseTree tmp = this;
+//      while (tmp.NODE_TAG.equals(this.NODE_TAG)) {
+//        tmpChildren.add(tmp.CHILDREN.get(0)); // add left child
+//        tmp = tmp.CHILDREN.get(1); // continue iteration to right child
+//      }
+//
+//      if (tmp.NODE_TAG.equals(originalNodeTag))  // Case: A* (X)(A (X)(X))
+//        tmpChildren.addAll(tmp.CHILDREN);
+//      else // Case: A* (X)(B (X)(X))
+//        tmpChildren.add(tmp);
+//
+//      CHILDREN = tmpChildren;
+//      NODE_TAG = originalNodeTag;
+//    }
+//
+//    if (!IS_LEAF)
+//      for (ParseTree child : CHILDREN) child.debinarize();
+//  }

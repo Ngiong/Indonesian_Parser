@@ -13,6 +13,8 @@ public class Agenda {
     beamSize = _beamSize;
   }
 
+  public boolean empty() { return pq.size() == 0; }
+
   public void push(ParseState o) {
     if (pq.size() < beamSize) pq.add(o);
     else {

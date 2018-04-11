@@ -106,6 +106,21 @@ public class PerceptronV2 {
     return result;
   }
 
+  public int score(ParseTree pt) {
+    int result = 0;
+    List<Action> actions = ActionExtractor.getParsingActions(pt, true);
+    Stack<StackToken> workingMemory = new Stack<>();
+    Queue<WordToken> wordQueue = WordTokenExtractor.getWordQueue(pt);
+
+    FeatureExtractor sim = new FeatureExtractor(workingMemory, wordQueue, actions);
+    while (sim.hasNextStep()) {
+      Pair<List<Feature>, Action> trainingExample = sim.nextStep();
+      result += score(trainingExample.getKey(), trainingExample.getValue());
+    }
+
+    return result;
+  }
+
   public void fromJSON(String filepath) { vectorParameter.fromJSON(filepath); }
   public void toJSON(String filename) { vectorParameter.toJSON(filename); }
 }

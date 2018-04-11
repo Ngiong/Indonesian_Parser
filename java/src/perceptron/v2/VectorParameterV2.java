@@ -61,8 +61,9 @@ public class VectorParameterV2 implements ParameterRepresentation {
   }
 
   public int calculate(Feature feature, Action action) {
+    int multiplier = feature.getTemplate().getType().getMultiplier();
     String featureAction = __compressFeature(feature) + Feature.DELIMITER + action.ordinal();
-    if (parameter.containsKey(featureAction)) return parameter.get(featureAction).get();
+    if (parameter.containsKey(featureAction)) return multiplier * parameter.get(featureAction).get();
     else return 0;
   }
 

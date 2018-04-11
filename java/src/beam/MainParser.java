@@ -19,12 +19,13 @@ import java.util.Stack;
 public class MainParser {
   private static final String CLASS_TAG = "[MAIN PARSER]";
   private final int BEAM_SIZE;
+  private final int N_BEST_PARSE;
   private FeatureTemplateSet featureTemplateSet;
   private PerceptronV2 perceptron;
   private ParseTreeFactory parseTreeFactory;
 
-  public MainParser(String perceptronFile, int beamSize) {
-    BEAM_SIZE = beamSize;
+  public MainParser(String perceptronFile, int beamSize, int nBestParse) {
+    BEAM_SIZE = beamSize; N_BEST_PARSE = nBestParse;
     featureTemplateSet = new FeatureTemplateSet(); featureTemplateSet.useAll();
     perceptron = new PerceptronV2(perceptronFile);
     parseTreeFactory = new ParseTreeFactory();
@@ -34,16 +35,20 @@ public class MainParser {
     Agenda agenda = new Agenda(BEAM_SIZE);
     agenda.push(new ParseState(queue));
 
-    ParseState result = null;
-    while (result == null) {
+    List<ParseState> result = new ArrayList<>();
+    while (result.size() < N_BEST_PARSE && !agenda.empty()) {
       ParseState top = agenda.pop();
-      if (top.isFinished()) result = top;
+      if (top.isFinished()) result.add(top);
       else agenda.pushAll(expand(top));
     }
 
-    List<Action> actions = result.getActions();
+    ParseState bestState = result.get(0);
+    for (ParseState state : result)
+      if (state.getScore() > bestState.getScore()) bestState = state;
+
+    List<Action> actions = bestState.getActions();
     ParseTree pt = parseTreeFactory.getParseTree(queue, actions);
-    pt.__debinarizeIOE();
+    pt.debinarize();
     return pt;
   }
 

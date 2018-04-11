@@ -18,5 +18,7 @@ public class Feature {
 
   public String toString() { return Integer.toString(template.ordinal()) + DELIMITER + featureId; }
 
+  public FeatureTemplate getTemplate() { return template; }
+
   public String featureActionString(Action action) { return this.toString() + DELIMITER + action.toString(); }
 }

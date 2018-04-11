@@ -15,8 +15,8 @@ public enum FeatureTemplate {
   Q0_W_T(FeatureType.UNIGRAM), Q1_W_T(FeatureType.UNIGRAM),
   Q2_W_T(FeatureType.UNIGRAM), Q3_W_T(FeatureType.UNIGRAM),
 
-  S0L_W_C(FeatureType.UNIGRAM_PLUS), S0R_W_C(FeatureType.UNIGRAM_PLUS), S0_U_W_C(FeatureType.UNIGRAM_PLUS),
-  S1L_W_C(FeatureType.UNIGRAM_PLUS), S1R_W_C(FeatureType.UNIGRAM_PLUS), S1_U_W_C(FeatureType.UNIGRAM_PLUS),
+  S0L_W_C(FeatureType.UNIGRAM_PLUS), S0R_W_C(FeatureType.UNIGRAM_PLUS), S0U_W_C(FeatureType.UNIGRAM_PLUS),
+  S1L_W_C(FeatureType.UNIGRAM_PLUS), S1R_W_C(FeatureType.UNIGRAM_PLUS), S1U_W_C(FeatureType.UNIGRAM_PLUS),
 
   // bigram
   S0_W_S1_W(FeatureType.BIGRAM), S0_W_S1_C(FeatureType.BIGRAM), S0_C_S1_W(FeatureType.BIGRAM), S0_C_S1_C(FeatureType.BIGRAM),
@@ -27,6 +27,13 @@ public enum FeatureTemplate {
   // trigram
   S0_C_S1_C_S2_C(FeatureType.TRIGRAM), S0_W_S1_C_S2_C(FeatureType.TRIGRAM), S0_C_S1_W_S2_C(FeatureType.TRIGRAM), S0_C_S1_C_S2_W(FeatureType.TRIGRAM),
   S0_C_S1_C_Q0_T(FeatureType.TRIGRAM), S0_W_S1_C_Q0_T(FeatureType.TRIGRAM), S0_C_S1_W_Q0_T(FeatureType.TRIGRAM), S0_C_S1_C_Q0_W(FeatureType.TRIGRAM);
+
+  //  ZHU's extended features
+  //  S0LL_W_C(FeatureType.UNIGRAM_PLUS), S0LR_W_C(FeatureType.UNIGRAM_PLUS), S0LU_W_C(FeatureType.UNIGRAM_PLUS),
+  //  S0RL_W_C(FeatureType.UNIGRAM_PLUS), S0RR_W_C(FeatureType.UNIGRAM_PLUS), S0RU_W_C(FeatureType.UNIGRAM_PLUS),
+  //  S0UL_W_C(FeatureType.UNIGRAM_PLUS), S0UR_W_C(FeatureType.UNIGRAM_PLUS), S0UU_W_C(FeatureType.UNIGRAM_PLUS),
+  //  S1LL_W_C(FeatureType.UNIGRAM_PLUS), S1LR_W_C(FeatureType.UNIGRAM_PLUS), S1LU_W_C(FeatureType.UNIGRAM_PLUS),
+  //  S1RL_W_C(FeatureType.UNIGRAM_PLUS), S1RR_W_C(FeatureType.UNIGRAM_PLUS), S1RU_W_C(FeatureType.UNIGRAM_PLUS),
 
   public static final String DELIMITER = "_";
   private FeatureType type;
@@ -85,9 +92,11 @@ public enum FeatureTemplate {
       token = workingStack.get(workingStack.size()-1-idx);
 
     if (type == FeatureType.UNIGRAM_PLUS && token != null) {
-      if (token.getPrevs() == null) token = null;
-      else {
-        char move = template.charAt(2);
+      String tmp = templateTokens[0];
+      for (int i = 2; i < tmp.length(); i++) {
+        if (token == null) { token = null; break; }
+        if (token.getPrevs() == null) { token = null; break; }
+        char move = tmp.charAt(i);
         switch (move) {
           case 'L': case 'U': token = token.getPrevs()[0]; break;
           case 'R': token = (token.getPrevs().length == 2) ? token.getPrevs()[1] : null; break;
