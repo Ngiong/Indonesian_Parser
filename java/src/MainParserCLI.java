@@ -145,6 +145,7 @@ public class MainParserCLI {
       System.out.println("Parsing Time  : " + time + " s.");
       System.out.println("Parser Output :\n");
       pt.printPretty(DEFAULT_START_INDENT, DEFAULT_INCREMENT_INDENT);
+      System.out.println("One-line brackets:\n" + pt.toString());
 
     } catch (ParseException e) {
       System.out.println(CLASS_TAG + RUN_INPUT_PARSE_TAG + e.getMessage());

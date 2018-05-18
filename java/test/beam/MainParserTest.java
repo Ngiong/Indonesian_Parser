@@ -15,15 +15,15 @@ public class MainParserTest {
 
     Queue<WordToken> wordQueue = new LinkedList<>();
 
-    wordQueue.add(new WordToken("\"", POSTag.SYM));
-    wordQueue.add(new WordToken("Saya", POSTag.PRN));
+//    wordQueue.add(new WordToken("\"", POSTag.SYM));
+//    wordQueue.add(new WordToken("Saya", POSTag.PRN));
 //    wordQueue.add(new WordToken("makan", POSTag.VBT));
 //    wordQueue.add(new WordToken("nasi", POSTag.NNO));
-    wordQueue.add(new WordToken(",", POSTag.SYM));
-    wordQueue.add(new WordToken("\"", POSTag.SYM));
-    wordQueue.add(new WordToken("kata", POSTag.VBI));
-    wordQueue.add(new WordToken("guru", POSTag.NNO));
-    wordQueue.add(new WordToken(".", POSTag.SYM));
+//    wordQueue.add(new WordToken(",", POSTag.SYM));
+//    wordQueue.add(new WordToken("\"", POSTag.SYM));
+//    wordQueue.add(new WordToken("kata", POSTag.VBI));
+//    wordQueue.add(new WordToken("guru", POSTag.NNO));
+//    wordQueue.add(new WordToken(".", POSTag.SYM));
 
     ParseTree pt = mainParser.parse(wordQueue);
     System.out.println(pt.toString());

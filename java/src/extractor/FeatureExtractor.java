@@ -44,7 +44,7 @@ public class FeatureExtractor {
 
   private void processSHIFT() {
     WordToken front = wordQueue.remove();
-    StackToken item = new StackToken(null, front);
+    StackToken item = new StackToken(front.getTag(), front);
     workingStack.push(item);
   }
 
@@ -55,11 +55,11 @@ public class FeatureExtractor {
   }
 
   private void processREDUCE(ConstituentLabel target) {
-    StackToken first = workingStack.pop(); // right-child
-    StackToken second = workingStack.pop(); // left-child
+    StackToken rightToken = workingStack.pop(); // right-child
+    StackToken leftToken = workingStack.pop(); // left-child
 
-    WordToken headWord = HeadWordDeterminer.determineHead(first, second);
-    StackToken item = new StackToken(target, headWord, second, first);
+    WordToken headWord = HeadWordDeterminer.determineHead(target, rightToken, leftToken);
+    StackToken item = new StackToken(target, headWord, leftToken, rightToken);
     workingStack.push(item);
   }
 

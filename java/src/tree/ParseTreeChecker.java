@@ -1,22 +1,16 @@
 package tree;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import datatype.ConstituentLabel;
+import datatype.POSTag;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ParseTreeChecker {
-  private static final String[] PT = {
-    "NNP", "VBI", "VBT", "NUM", "PPO", "NNO", "SYM", "CCN", "PRN", "ADV", "ADJ", "NEG", "ADK", "PRR", "VBL", "VBP", "ART",
-    "PRK", "KUA", "$$$", "UNS", "LBR", "RBR", "VBE", "PRI", "PAR", "INT", "CSN"
-  };
-
-  private static final String[] CL = {
-    "AdjP", "AdvP", "NP", "PP", "VP", "CP", "RPN", "S", "SQ", "SBAR"
-  };
-
-  private static final Set<String> POS_TAGS = new HashSet<>(Arrays.asList(PT));
-  private static final Set<String> CONSTITUENT_LABELS = new HashSet<>(Arrays.asList(CL));
+  private static final List<String> PT = Arrays.stream(POSTag.values()).map(Object::toString).collect(Collectors.toList());
+  private static final List<String> CL = Arrays.stream(ConstituentLabel.values()).map(Object::toString).collect(Collectors.toList());
+  private static final Set<String> POS_TAGS = new HashSet<>(PT);
+  private static final Set<String> CONSTITUENT_LABELS = new HashSet<>(CL);
 
   public static boolean isValidTree(ParseTree pt) {
     if (pt.isLeaf()) return POS_TAGS.contains(pt.getNodeTag());
@@ -28,7 +22,7 @@ public class ParseTreeChecker {
       } else {
         valid = false;
       }
-
+      if (!valid) System.out.println(pt.toString());
       return valid;
     }
   }

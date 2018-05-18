@@ -54,7 +54,7 @@ public class ParseState implements Comparable<ParseState> {
       throw new IllegalStateException("Trying to SHIFT while queue size = 0.");
 
     WordToken front = wordQueue.remove();
-    StackToken item = new StackToken(null, front);
+    StackToken item = new StackToken(front.getTag(), front);
     workingStack.push(item);
   }
 
@@ -71,11 +71,11 @@ public class ParseState implements Comparable<ParseState> {
     if (workingStack.size() < 2)
       throw new IllegalStateException("Trying to REDUCE while stack size < 2.");
 
-    StackToken first = workingStack.pop(); // right-child
-    StackToken second = workingStack.pop(); // left-child
+    StackToken rightToken = workingStack.pop(); // right-child
+    StackToken leftToken = workingStack.pop(); // left-child
 
-    WordToken headWord = HeadWordDeterminer.determineHead(first, second);
-    StackToken item = new StackToken(target, headWord, second, first);
+    WordToken headWord = HeadWordDeterminer.determineHead(target, rightToken, leftToken);
+    StackToken item = new StackToken(target, headWord, leftToken, rightToken);
     workingStack.push(item);
   }
 

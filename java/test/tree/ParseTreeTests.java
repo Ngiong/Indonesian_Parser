@@ -2,6 +2,9 @@ package tree;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ParseTreeTests {
@@ -64,5 +67,21 @@ public class ParseTreeTests {
   public void testPrintPretty() {
     ParseTree pt = parseTreeFactory.getParseTree(VALID_1, false);
     pt.printPretty(4, 2);
+  }
+
+  @Test
+  public void testTreebank() {
+    String treebank = "corpus/ID-test-mod.treebank";
+    try (BufferedReader reader = new BufferedReader(new FileReader(treebank))) {
+      String line = null;
+      while ((line = reader.readLine()) != null) {
+        ParseTree pt = parseTreeFactory.getParseTree(line, true); pt.makeTree();
+        boolean valid = ParseTreeChecker.isValidTree(pt);
+        if (!valid) throw new Exception(line);
+      }
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }

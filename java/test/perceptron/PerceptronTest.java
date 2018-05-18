@@ -9,7 +9,7 @@ public class PerceptronTest {
   @Test
   public void perceptronTrainTest() {
     PerceptronV2 p = new PerceptronV2("corpus/full_PTF_v2_train.tre", 1);
-    p.fromJSON("models/full/FULL_0.json");
+//    p.fromJSON("models/full/FULL_0.json");
     for (int i = 1; i < 9; i++) {
       p.train(1);
       p.toJSON("models/full/FULL_" + Integer.toString(i));

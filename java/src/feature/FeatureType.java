@@ -3,8 +3,8 @@ package feature;
 public enum FeatureType {
   UNIGRAM(1),
   UNIGRAM_PLUS(1),
-  BIGRAM(2),
-  TRIGRAM(3);
+  BIGRAM(1),
+  TRIGRAM(1);
 
   FeatureType(int multiplier) {
     this.multiplier = multiplier;
